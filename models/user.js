@@ -57,5 +57,20 @@ export default (sequelize, DataTypes) => {
     },
   });
 
+  User.associate = (models) => {
+    User.belongsTo(models.Suscription, {
+      foreignKey: {
+        name: 'suscriptionId',
+        field: 'suscription_id',
+      },
+    });
+
+    
+    User.hasMany(models.UserAddress, { as: 'userAddress' }, { foreignKey: { name: 'userId', field: 'user_id' } });
+    
+    // User.hasMany(models.UserAddress, {foreignKey: 'AuthorId'})
+
+  };
+
   return User;
 };

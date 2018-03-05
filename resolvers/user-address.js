@@ -4,8 +4,7 @@ import requiresAuth from '../permissions';
 export default {
   Query: {
     getAllAddress: (parent, args, { models }) => models.UserAddress.findAll(),
-    getAddressByUser: requiresAuth.createResolver((parent, args, { models, user }) =>
-      models.UserAddress.findAll({ where: { userId: user.id } })),
+    getAddressByUser: requiresAuth.createResolver((parent, args, { models, user }) => models.UserAddress.findAll({ where: { userId: user.id } })),
   },
   Mutation: {
     createAddress: requiresAuth.createResolver(async (parent, args, { models, user }) => {

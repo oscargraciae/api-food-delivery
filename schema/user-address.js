@@ -10,11 +10,13 @@ export default `
     lat: Float
     lng: Float
     isActive: Boolean
+    userId: Int!
+    user: User
   }
 
   type Query {
-    getAllAddress: [UserAddress!]!
-    getAddressByUser(userId: Int!): [UserAddress!]!
+    getAllAddress: [UserAddress!]
+    getAddressByUser(userId: Int!): [UserAddress!]
   }
 
   type Mutation {
@@ -27,6 +29,7 @@ export default `
       addressMap: String,
       lat: Float!
       lng: Float!
+      userId: Int!
     ): UserAddress!
   }
 

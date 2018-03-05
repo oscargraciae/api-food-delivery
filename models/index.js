@@ -14,7 +14,7 @@ const models = {
   OrderDetail: sequelize.import('./order-detail'),
   OrderStatus: sequelize.import('./order-status'),
   Order: sequelize.import('./order'),
-  // suscription: sequelize.import('./suscription'),
+  Suscription: sequelize.import('./suscription'),
   UserAddress: sequelize.import('./user-address'),
   // UserSuscription: sequelize.import('./user-suscription'),
   User: sequelize.import('./user'),

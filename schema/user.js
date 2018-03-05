@@ -4,12 +4,14 @@ export default `
     email: String!
     firstName: String!
     lastName: String!
-    phone: String!
+    phone: String
+    suscription: Suscription
+    userAddress: [UserAddress]
   }
 
   type Query {
     getUser(id: Int!): User!
-    getAllUsers: [User!]!
+    getAllUsers: [User!]
   }
 
   type RegisterResponse {
