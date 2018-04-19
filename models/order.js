@@ -15,7 +15,12 @@ export default (sequelize, DataTypes) => {
   }, { underscored: true });
 
   Order.associate = (models) => {
-    Order.belongsTo(models.User);
+    Order.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+      },
+    });
     Order.belongsTo(models.CreditCard, {
       foreignKey: {
         name: 'creditCardId',
@@ -28,7 +33,12 @@ export default (sequelize, DataTypes) => {
         field: 'user_address_id',
       },
     });
-    Order.belongsTo(models.OrderStatus);
+    Order.belongsTo(models.OrderStatus, {
+      foreignKey: {
+        name: 'orderStatusId',
+        field: 'order_status_id',
+      },
+    });
   };
 
   return Order;

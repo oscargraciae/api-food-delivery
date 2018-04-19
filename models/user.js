@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import _ from 'lodash';
 
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
@@ -47,6 +49,15 @@ export default (sequelize, DataTypes) => {
       defaultValue: false,
       field: 'is_verified',
     },
+    withAddress: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      field: 'with_address',
+    },
+    conektaid: {
+      type: DataTypes.STRING,
+      field: 'conektaid',
+    },
   }, {
     hooks: {
       afterValidate: async (user) => {
@@ -58,18 +69,31 @@ export default (sequelize, DataTypes) => {
   });
 
   User.associate = (models) => {
-    User.belongsTo(models.Suscription, {
-      foreignKey: {
-        name: 'suscriptionId',
-        field: 'suscription_id',
-      },
-    });
-
-    
     User.hasMany(models.UserAddress, { as: 'userAddress' }, { foreignKey: { name: 'userId', field: 'user_id' } });
-    
     // User.hasMany(models.UserAddress, {foreignKey: 'AuthorId'})
+  };
 
+  // eslint-disable-next-line func-names
+  User.prototype.toAuthJSON = function () {
+    const createToken = jwt.sign(
+      {
+        id: this.id,
+        email: this.email,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        withAddress: this.withAddress,
+      },
+      'secret',
+    );
+
+    return {
+      id: this.id,
+      email: this.email,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      token: `${createToken}`,
+      // token: `JWT ${createToken}`,
+    };
   };
 
   return User;

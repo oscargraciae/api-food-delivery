@@ -2,29 +2,46 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 
-export const createTokens = async (user, secret, secret2) => {
-  const createToken = jwt.sign(
+
+export const createTokens = async (user) => {
+  const createToken = await jwt.sign(
     {
-      user: _.pick(user, ['id']),
+      id: user.id,
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
     },
-    secret,
-    {
-      expiresIn: '1h',
-    },
+    'secretpass',
   );
 
-  const createRefreshToken = jwt.sign(
-    {
-      user: _.pick(user, 'id'),
-    },
-    secret2,
-    {
-      expiresIn: '7d',
-    },
-  );
-
-  return [createToken, createRefreshToken];
+  console.log("Token", createToken);
+  return createToken;
 };
+
+
+// export const createTokens = async (user, secret, secret2) => {
+//   const createToken = jwt.sign(
+//     {
+//       user: _.pick(user, ['id']),
+//     },
+//     secret,
+//     {
+//       expiresIn: '1h',
+//     },
+//   );
+
+//   const createRefreshToken = jwt.sign(
+//     {
+//       user: _.pick(user, 'id'),
+//     },
+//     secret2,
+//     {
+//       expiresIn: '7d',
+//     },
+//   );
+
+//   return [createToken, createRefreshToken];
+// };
 
 export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2) => {
   let userId = -1;
@@ -81,7 +98,7 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
   const refreshTokenSecret = user.password + SECRET2;
 
   const [token, refreshToken] = await createTokens(user, SECRET, refreshTokenSecret);
-
+  
   return {
     ok: true,
     token,

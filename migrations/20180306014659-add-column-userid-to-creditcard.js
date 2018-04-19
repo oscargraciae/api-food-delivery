@@ -1,14 +1,16 @@
+'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.addColumn('users', 'suscription_id', {
+    queryInterface.addColumn('credit_cards', 'user_id', {
       type: Sequelize.INTEGER,
       allowNull: true,
     }).then(() => {
-      queryInterface.addConstraint('users', ['suscription_id'], {
+      queryInterface.addConstraint('credit_cards', ['user_id'], {
         type: 'FOREIGN KEY',
-        name: 'users_fkey_constraint_suscription_id',
+        name: 'credit_cards_fkey_constraint_user_id',
         references: {
-          table: 'suscriptions',
+          table: 'users',
           field: 'id',
         },
         onDelete: 'cascade',

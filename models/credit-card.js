@@ -9,5 +9,14 @@ export default (sequelize, DataTypes) => {
     },
   }, { underscored: true });
 
+  CreditCard.associate = (models) => {
+    CreditCard.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+      },
+    });
+  };
+
   return CreditCard;
 };

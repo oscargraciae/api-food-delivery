@@ -16,3 +16,8 @@ export default createResolver((parent, args, { user }) => {
     throw new Error('Not authenticated');
   }
 });
+
+export const valid = (done) => {
+  return done(false);
+};
+

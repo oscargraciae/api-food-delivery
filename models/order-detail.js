@@ -9,8 +9,18 @@ export default (sequelize, DataTypes) => {
   }, { underscored: true });
 
   OrderDetail.associate = (models) => {
-    OrderDetail.belongsTo(models.Order);
-    OrderDetail.belongsTo(models.Dish);
+    OrderDetail.belongsTo(models.Order, {
+      foreignKey: {
+        name: 'orderId',
+        field: 'order_id',
+      },
+    });
+    OrderDetail.belongsTo(models.Dish, {
+      foreignKey: {
+        name: 'dishId',
+        field: 'dish_id',
+      },
+    });
   };
 
   return OrderDetail;

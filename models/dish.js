@@ -4,7 +4,10 @@ export default (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     ingredients: DataTypes.STRING,
     price: DataTypes.DECIMAL,
-    availableOn: DataTypes.STRING,
+    availableOn: {
+      type: DataTypes.STRING,
+      field: 'available_on',
+    },
   });
 
   // Dish.associate = (models) => {};
