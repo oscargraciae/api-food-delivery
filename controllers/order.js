@@ -1,3 +1,5 @@
+import conekta from 'conekta';
+
 import models from '../models';
 
 const controller = {};
@@ -28,34 +30,76 @@ async function calculateItems(data) {
   };
 }
 
+function payment(data, callback) {
+  conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  conekta.locale = 'es';
+  conekta.Order.create({
+    currency: 'MXN',
+    customer_info: {
+      customer_id: data.customerId,
+    },
+    line_items: data.items,
+    charges: [{
+      payment_method: {
+        type: 'card',
+        payment_source_id: data.paymentSourceId,
+      },
+    }],
+  }, (err, order) => {
+    if (err) {
+      return callback({
+        ok: false,
+        err,
+      });
+    }
+    return callback({
+      ok: true,
+      order,
+    });
+  });
+}
+
+async function saveOrderDishes(dishes, order) {
+  for (let x = 0; x < dishes.length; x++) {
+    const item = dishes[x];
+    await models.OrderDetail.create({ ...item, orderId: order.id });
+  }
+}
+
+async function saveOrder(order) {
+  const resp = await models.Order.create({ ...order });
+  return resp;
+}
+
 controller.create = async (req, res) => {
-  // Se registra una nueva orden
   try {
     const data = req.body;
-    const {
-      total, subtotal, fee, dishes,
-    } = await calculateItems(data.orderDetails);
-    const order = {
-      subtotal,
-      total,
-      fee,
-      userId: req.user.id,
-      orderStatusId: 1,
-    };
-    const orderResp = await models.Order.create({ ...data, ...order });
+    const order = await calculateItems(data.orderDetails);
+    const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
 
-    for (let x = 0; x < dishes.length; x++) {
-      const item = dishes[x];
-      const orderDetailResp = await models.OrderDetail.create({ ...item, orderId: orderResp.id });
-    }
-    return res.json({
-      ok: true,
-      orderResp,
+    const creditCard = await models.CreditCard.findById(data.creditCardId);
+
+    payment({ customerId: req.user.conektaid, items: newDishes, paymentSourceId: creditCard.token }, async (orderConekta) => {
+      if (orderConekta.ok) {
+        const orderResp = await saveOrder({
+          ...data, ...order, userId: req.user.id, orderStatusId: 1,
+        });
+        saveOrderDishes(order.dishes, orderResp);
+        return res.json({
+          ok: true,
+          orderResp,
+        });
+      }
+      return res.json({
+        ok: false,
+        err: orderConekta.err,
+      });
     });
   } catch (error) {
     return res.status(500).json({
       ok: false,
       message: 'No se ha podido procesar la orden',
+      error: error.message,
     });
   }
 };
@@ -73,9 +117,6 @@ controller.estimateOrder = async (req, res) => {
     };
     dishes.push(orderDetail);
   }
-
-  // total, subtotal, fee
-  // array[{ total, quantity  }]
   return res.json(dishes);
 };
 

@@ -15,7 +15,7 @@ function createCreditCard(card, userId) {
 const controller = {};
 
 controller.getByUser = async (req, res) => {
-  const creditCards = await models.CreditCard.findAll({ where: { userId: req.user.id } });
+  const creditCards = await models.CreditCard.findAll({ where: { userId: req.user.id }, order: [['id', 'DESC']] });
   return res.json(creditCards);
 };
 
@@ -27,10 +27,8 @@ controller.create = async (req, res) => {
     conekta.Customer.find(req.user.conektaid, (err, customer) => {
       customer.createPaymentSource({ type: 'card', token_id: req.body.token }, (err, card) => {
         if (err) {
-          console.log("ERROR::----->", err);
           return res.json(err);
         }
-        console.log("CARD::------>", card);
         const resp = card;
         createCreditCard(resp, req.user.id);
         return res.json(resp);
