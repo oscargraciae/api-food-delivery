@@ -7,7 +7,7 @@ controller.get = async (req, res) => {
   const user = await models.User.findOne({
     where: { id },
     include: [
-      { model: models.UserAddress, as: 'userAddress' },
+      { model: models.UserAddress, as: 'user_address' },
     ],
   });
 

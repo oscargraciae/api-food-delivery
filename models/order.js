@@ -15,6 +15,7 @@ export default (sequelize, DataTypes) => {
   }, { underscored: true });
 
   Order.associate = (models) => {
+    // User.hasMany(models.UserAddress, { as: 'userAddress' }, { foreignKey: { name: 'userId', field: 'user_id' } });
     Order.belongsTo(models.User, {
       foreignKey: {
         name: 'userId',

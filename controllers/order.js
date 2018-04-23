@@ -62,6 +62,10 @@ function payment(data, callback) {
 async function saveOrderDishes(dishes, order) {
   for (let x = 0; x < dishes.length; x++) {
     const item = dishes[x];
+    console.log("ITEMS----->");
+    console.log("ITEMS----->", item);
+    console.log("ITEMS----->");
+    console.log("ITEMS----->");
     await models.OrderDetail.create({ ...item, orderId: order.id });
   }
 }
@@ -118,6 +122,28 @@ controller.estimateOrder = async (req, res) => {
     dishes.push(orderDetail);
   }
   return res.json(dishes);
+};
+
+
+controller.getAll = async (req, res) => {
+  const orders = await models.Order.findAll({ 
+    where: { userId: req.user.id },
+    include: [
+      { model: models.UserAddress, as: 'user_address' },
+    ],
+    order: [['id', 'DESC']],
+  });
+  return res.json(orders);
+};
+
+controller.getDetail = async (req, res) => {
+  const detail = await models.OrderDetail.findAll({
+    where: { orderId: req.params.id },
+    include: [
+      { model: models.Dish, as: 'dish' },
+    ],
+  });
+  return res.json(detail);
 };
 
 export default controller;

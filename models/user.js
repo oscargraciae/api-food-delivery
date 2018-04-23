@@ -69,7 +69,7 @@ export default (sequelize, DataTypes) => {
   });
 
   User.associate = (models) => {
-    User.hasMany(models.UserAddress, { as: 'userAddress' }, { foreignKey: { name: 'userId', field: 'user_id' } });
+    User.hasMany(models.UserAddress, { as: 'user_address' }, { foreignKey: { name: 'userId', field: 'user_id' } });
     // User.hasMany(models.UserAddress, {foreignKey: 'AuthorId'})
   };
 

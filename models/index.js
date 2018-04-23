@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 
 const sequelize = new Sequelize('eathouse_development', 'postgres', 'desarrollo', {
   dialect: 'postgres',
+  // timezone: '',
   define: {
     underscored: true,
   },
