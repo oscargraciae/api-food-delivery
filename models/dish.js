@@ -3,6 +3,7 @@ export default (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     description: DataTypes.STRING,
     ingredients: DataTypes.STRING,
+    image: DataTypes.STRING,
     price: DataTypes.DECIMAL,
     availableOn: {
       type: DataTypes.STRING,

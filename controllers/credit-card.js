@@ -49,7 +49,7 @@ controller.create = async (req, res) => {
       const customer = resp.toObject();
       const user = await models.User.findOne({ where: { id: req.user.id } });
       user.update({ conektaid: customer.id });
-      createCreditCard(customer.payment_sources[0]);
+      createCreditCard(customer.payment_sources.data[0], req.user.id);
       return res.json(resp.toObject());
     });
   }

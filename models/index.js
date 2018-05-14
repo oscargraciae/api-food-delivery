@@ -1,6 +1,16 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize('eathouse_development', 'postgres', 'desarrollo', {
+// const sequelize = new Sequelize('eathouse_development', 'postgres', 'desarrollo', {
+//   dialect: 'postgres',
+//   // timezone: '',
+//   define: {
+//     underscored: true,
+//   },
+// });
+
+const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
+  host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
+  port: 5432,
   dialect: 'postgres',
   // timezone: '',
   define: {

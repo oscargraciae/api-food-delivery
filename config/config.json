@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "desarrollo",
-    "database": "eathouse_development",
-    "host": "127.0.0.1",
+    "username": "eathouse",
+    "password": "Eathouse.001",
+    "database": "eathouse",
+    "host": "eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com",
     "dialect": "postgres"
   },
   "test": {

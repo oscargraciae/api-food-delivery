@@ -1,8 +1,11 @@
 import conekta from 'conekta';
+import sequelize from 'sequelize';
+
 
 import models from '../models';
 
 const controller = {};
+const { Op } = sequelize;
 
 async function calculateItems(data) {
   const dishes = [];
@@ -17,6 +20,7 @@ async function calculateItems(data) {
       dishId: item.id,
       total: totalItem,
       quantity: item.quantity,
+      deliveryDate: item.deliveryDate,
     };
     dishes.push(orderDetail);
     subtotal += totalItem;
@@ -62,10 +66,7 @@ function payment(data, callback) {
 async function saveOrderDishes(dishes, order) {
   for (let x = 0; x < dishes.length; x++) {
     const item = dishes[x];
-    console.log("ITEMS----->");
-    console.log("ITEMS----->", item);
-    console.log("ITEMS----->");
-    console.log("ITEMS----->");
+    console.log("Guardado de platillo------->", item);
     await models.OrderDetail.create({ ...item, orderId: order.id });
   }
 }
@@ -79,6 +80,8 @@ controller.create = async (req, res) => {
   try {
     const data = req.body;
     const order = await calculateItems(data.orderDetails);
+    console.log("##########################");
+    console.log(data.orderDetails);
     const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
 
     const creditCard = await models.CreditCard.findById(data.creditCardId);
@@ -126,7 +129,7 @@ controller.estimateOrder = async (req, res) => {
 
 
 controller.getAll = async (req, res) => {
-  const orders = await models.Order.findAll({ 
+  const orders = await models.Order.findAll({
     where: { userId: req.user.id },
     include: [
       { model: models.UserAddress, as: 'user_address' },
@@ -144,6 +147,24 @@ controller.getDetail = async (req, res) => {
     ],
   });
   return res.json(detail);
+};
+
+controller.getSchedules = async (req, res) => {
+  const schedules = await models.OrderDetail.findAll({
+    where: {
+      deliveryDate: {
+        // [Op.lt]: new Date(),
+        [Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000),
+      },
+    },
+    include: [{
+      model: models.Order,
+      where: { userId: req.user.id },
+    }, { model: models.Dish, as: 'dish' }],
+    // group: ['deliveryDate'],
+    // group: ['orderId'],
+  });
+  return res.json(schedules);
 };
 
 export default controller;

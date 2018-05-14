@@ -1,7 +1,9 @@
+'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.addColumn('user_suscriptions', 'token_suscription', {
-      type: Sequelize.INTEGER,
+    queryInterface.addColumn('dishes', 'image', {
+      type: Sequelize.STRING,
       allowNull: true,
     });
   },
