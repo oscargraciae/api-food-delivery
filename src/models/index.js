@@ -12,11 +12,27 @@ const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
   port: 5432,
   dialect: 'postgres',
-  // timezone: '',
+  timezone: '-05:00',
   define: {
     underscored: true,
   },
 });
+
+// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
+//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
+//   port: 5432,
+//   dialect: 'postgres',
+//   define: {
+//     underscored: true,
+//     freezeTableName: true,
+//     timestamps: false,
+//   },
+//   dialectOptions: {
+//     useUTC: false,
+//     dateStrings: true,
+//   },
+//   timezone: '+05:00',
+// });
 
 const models = {
   CreditCard: sequelize.import('./credit-card'),
