@@ -46,26 +46,22 @@ var localStrategy = new _passportLocal2.default(localOpts, function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _context.next = 3;
+
+            console.log("Datos de login---->", email, password);
+            _context.next = 4;
             return _models2.default.User.findOne({ where: { email: email } });
 
-          case 3:
+          case 4:
             user = _context.sent;
-            _context.next = 6;
+
+            console.log("Info de usuario--->", user);
+            _context.next = 8;
             return _bcrypt2.default.compare(password, user.password);
 
-          case 6:
+          case 8:
             valid = _context.sent;
 
             if (user) {
-              _context.next = 11;
-              break;
-            }
-
-            return _context.abrupt('return', done(null, false));
-
-          case 11:
-            if (valid) {
               _context.next = 13;
               break;
             }
@@ -73,19 +69,27 @@ var localStrategy = new _passportLocal2.default(localOpts, function () {
             return _context.abrupt('return', done(null, false));
 
           case 13:
+            if (valid) {
+              _context.next = 15;
+              break;
+            }
+
+            return _context.abrupt('return', done(null, false));
+
+          case 15:
             return _context.abrupt('return', done(null, user));
 
-          case 16:
-            _context.prev = 16;
+          case 18:
+            _context.prev = 18;
             _context.t0 = _context['catch'](0);
             return _context.abrupt('return', done(_context.t0, false));
 
-          case 19:
+          case 21:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[0, 16]]);
+    }, _callee, undefined, [[0, 18]]);
   }));
 
   return function (_x, _x2, _x3) {
