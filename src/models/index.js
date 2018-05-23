@@ -12,7 +12,7 @@ const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
   port: 5432,
   dialect: 'postgres',
-  timezone: '-05:00',
+  // timezone: '-05:00',
   define: {
     underscored: true,
   },
