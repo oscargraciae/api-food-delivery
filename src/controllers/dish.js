@@ -1,4 +1,5 @@
 import models from '../models';
+import { test, addContactToList } from '../utils/sendgrid-client';
 
 const controller = {};
 

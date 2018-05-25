@@ -20,6 +20,8 @@ var _models = require('../models');
 
 var _models2 = _interopRequireDefault(_models);
 
+var _sendgridClient = require('../utils/sendgrid-client');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var controller = {};
@@ -76,25 +78,35 @@ controller.create = function () {
 
           case 3:
             user = _context2.sent;
+
+            if (!user) {
+              _context2.next = 7;
+              break;
+            }
+
+            _context2.next = 7;
+            return (0, _sendgridClient.addContactToList)(user);
+
+          case 7:
             return _context2.abrupt('return', res.status(201).json({
               ok: true,
               user: user
             }));
 
-          case 7:
-            _context2.prev = 7;
+          case 10:
+            _context2.prev = 10;
             _context2.t0 = _context2['catch'](0);
             return _context2.abrupt('return', res.json({
               ok: false,
               errors: _context2.t0.message
             }));
 
-          case 10:
+          case 13:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[0, 7]]);
+    }, _callee2, undefined, [[0, 10]]);
   }));
 
   return function (_x3, _x4) {

@@ -1,4 +1,5 @@
 import models from '../models';
+import { addContactToList } from '../utils/sendgrid-client';
 
 const controller = {};
 
@@ -25,6 +26,9 @@ controller.login = (req, res, next) => {
 controller.create = async (req, res) => {
   try {
     const user = await models.User.create(req.body);
+    if (user) {
+      await addContactToList(user);
+    }
     return res.status(201).json({
       ok: true,
       user,

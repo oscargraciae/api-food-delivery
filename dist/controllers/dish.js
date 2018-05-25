@@ -16,6 +16,8 @@ var _models = require('../models');
 
 var _models2 = _interopRequireDefault(_models);
 
+var _sendgridClient = require('../utils/sendgrid-client');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var controller = {};
