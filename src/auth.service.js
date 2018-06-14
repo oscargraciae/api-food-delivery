@@ -12,13 +12,11 @@ const localOpts = {
 
 const localStrategy = new LocalStrategy(localOpts, async (email, password, done) => {
   try {
-    console.log("Datos de login---->", email, password);
     const user = await db.User.findOne({ where: { email } });
-    console.log("Info de usuario--->", user);
-    const valid = await bcrypt.compare(password, user.password);
+    // const valid = await bcrypt.compare(password, user.password);
     if (!user) {
       return done(null, false);
-    } else if (!valid) {
+    } else if (!await bcrypt.compare(password, user.password)) {
       return done(null, false);
     }
 
