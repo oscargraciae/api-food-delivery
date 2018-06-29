@@ -80,8 +80,6 @@ controller.create = async (req, res) => {
   try {
     const data = req.body;
     const order = await calculateItems(data.orderDetails);
-    console.log("##########################");
-    console.log(data.orderDetails);
     const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
 
     const creditCard = await models.CreditCard.findById(data.creditCardId);

@@ -4,6 +4,9 @@ import dishRoutes from './dish';
 import creditCardsRoutes from './credit-cards';
 import orderRoutes from './order';
 
+// admin
+import orderAdminRoutes from '../admin/routes/admin-order';
+
 import { authJwt } from '../auth.service';
 
 export default (app) => {
@@ -12,5 +15,8 @@ export default (app) => {
   app.use('/api/v1/dishes', dishRoutes);
   app.use('/api/v1/credit-cards', creditCardsRoutes);
   app.use('/api/v1/orders', orderRoutes);
+
+  app.use('/api/admin/orders', orderAdminRoutes);
+
 };
 

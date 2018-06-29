@@ -5,6 +5,8 @@ export default (sequelize, DataTypes) => {
     zipcode: DataTypes.STRING,
     city: DataTypes.STRING,
     state: DataTypes.STRING,
+    phone: DataTypes.STRING,
+    notes: DataTypes.STRING,
     addressMap: {
       type: DataTypes.STRING,
       field: 'address_map',
