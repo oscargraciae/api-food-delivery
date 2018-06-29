@@ -3,6 +3,7 @@ import sequelize from 'sequelize';
 
 
 import models from '../models';
+import { CONEKTA_KEY } from '../config/consts';
 
 const controller = {};
 const { Op } = sequelize;
@@ -35,7 +36,8 @@ async function calculateItems(data) {
 }
 
 function payment(data, callback) {
-  conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  // conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  conekta.api_key = CONEKTA_KEY;
   conekta.locale = 'es';
   conekta.Order.create({
     currency: 'MXN',

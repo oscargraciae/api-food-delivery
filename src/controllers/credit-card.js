@@ -1,6 +1,7 @@
 import conekta from 'conekta';
 
 import models from '../models';
+import { CONEKTA_KEY } from '../config/consts';
 
 function createCreditCard(card, userId) {
   const cardObj = {
@@ -20,7 +21,8 @@ controller.getByUser = async (req, res) => {
 };
 
 controller.create = async (req, res) => {
-  conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  // conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  conekta.api_key = CONEKTA_KEY;
   conekta.locale = 'es';
 
   if (req.user.conektaid) {
