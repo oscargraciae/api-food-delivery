@@ -1,5 +1,7 @@
+import bcrypt from 'bcrypt';
 import models from '../models';
 import { addContactToList } from '../utils/sendgrid-client';
+import { mailResetPassword } from '../mailers/user';
 
 const controller = {};
 
@@ -39,6 +41,37 @@ controller.create = async (req, res) => {
       errors: err.message,
     });
   }
+};
+
+controller.sendPasswordReset = async (req, res) => {
+  const { email } = req.body;
+  const user = await models.User.findOne({ where: { email } });
+
+  if (!user) {
+    return res.json({ message: 'Usuario no encontrado' });
+  }
+  const message = await mailResetPassword(user);
+  return res.json({ message: 'Correo enviado', prueba: message });
+};
+
+controller.validationToken = async (req, res) => {
+  const { t, id } = req.query;
+
+  const user = await models.User.findOne({ where: { id } });
+
+  if (!await bcrypt.compare(user.email, t)) {
+    return res.json({ isValid: false, message: 'Usuario invalido' });
+  }
+
+  return res.json({ message: 'Usuario valido', isValid: true, userId: user.id });
+};
+
+controller.changePassword = async (req, res) => {
+  const { id } = req.params;
+  const us = await models.User.update({ password: req.body.newPassword }, { where: { id } });
+
+
+  return res.json({ message: 'Usuario valido', userId: us, ok: true });
 };
 
 controller.createAddress = async (req, res) => {

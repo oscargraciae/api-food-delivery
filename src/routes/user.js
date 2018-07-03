@@ -9,5 +9,6 @@ routes.get('/:id', authJwt, userController.get);
 routes.post('/login', authLocal, userController.login);
 routes.post('/signup', userController.create);
 routes.post('/address', authJwt, userController.createAddress);
+routes.post('/send-password-email', userController.sendPasswordReset);
 
 export default routes;
