@@ -14,7 +14,7 @@ async function mailResetPassword(user) {
     templateId: '1826a31f-90ae-4263-bba5-3e67c4d3bc4c',
     substitutions: {
       name: 'Some One',
-      url: `http://localhost:3000/password-reset?t=${hashedEmail}&id=${user.id}`,
+      url: `https://eathouse.mx/password-reset?t=${hashedEmail}&id=${user.id}`,
     },
   };
 
