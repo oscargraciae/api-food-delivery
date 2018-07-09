@@ -7,6 +7,7 @@ import passwordRoutes from './password';
 
 // admin
 import orderAdminRoutes from '../admin/routes/admin-order';
+import userAdminRoutes from '../admin/routes/admin-users';
 
 import { authJwt } from '../auth.service';
 
@@ -19,6 +20,7 @@ export default (app) => {
   app.use('/api/v1/orders', orderRoutes);
 
   app.use('/api/admin/orders', orderAdminRoutes);
+  app.use('/api/admin/users', userAdminRoutes);
 
 };
 
