@@ -25,28 +25,30 @@ controller.getAllByDeliveryDate = async (req, res) => {
 
   const [data] = await models.sequelize.query(
     `
-    select DISTINCT users.id, users.*, user_addresses.* from users
+    select DISTINCT users.id, users.*, user_addresses.*, orders.id as order_id from users
     inner join orders on users.id = orders.user_id
     inner join user_addresses on user_addresses.id = orders.user_address_id
     inner join order_details on order_details.order_id = (select order_id from order_details where orders.id = order_details.order_id limit 1)
-    WHERE order_details.delivery_date < '2018-07-13 03:09:17' AND order_details.delivery_date >= '2018-07-12 03:09:17'
+    WHERE order_details.delivery_date < '${d}' AND order_details.delivery_date >= '${de}'
     
   `,
     { raw: true },
   );
 
-  // WHERE order_details.delivery_date < '${d}' AND order_details.delivery_date >= '${de}'
+  // WHERE order_details.delivery_date < '2018-07-13 03:09:17' AND order_details.delivery_date >= '2018-07-12 03:09:17'
 
   return res.json(data);
 };
 
-controller.sendDeliveryNotification = (req, res) => {
-  const { id } = req.params;
-  const user = models.User.findOne({ where: { id } });
-  const message = `Eathouse: Hola ${user.firstName}, tu orden va camino. Te deseamos buen provecho.`;
-  const phone = '8123203436';
+controller.sendDeliveryNotification = async (req, res) => {
+  const { id } = req.params;
+  const order = await models.Order.findOne({ where: { id } });
+  const address = await models.UserAddress.findOne({ where: { id: order.userAddressId } });
+  const message = 'Eathouse: Hola, tu orden va en camino, ¡buen provecho!';
+  // const phone = '8123203436';
+  const { phone } = address;
   sendSms(message, phone);
-  return res.json({ message: 'Notificacíon enviada' });
+  return res.json({ message: 'Notificacíon enviada' });
 };
 
 export default controller;
