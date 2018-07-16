@@ -5,6 +5,6 @@ const routes = new Router();
 
 routes.get('/', userController.getAll);
 routes.get('/delivery', userController.getAllByDeliveryDate);
-routes.get('/delivery-notification', userController.sendDeliveryNotification);
+routes.get('/:id/delivery-notification', userController.sendDeliveryNotification);
 
 export default routes;

@@ -41,7 +41,9 @@ controller.getAllByDeliveryDate = async (req, res) => {
 };
 
 controller.sendDeliveryNotification = (req, res) => {
-  const message = 'Eathouse: Hola Oscar, tu orden va camino. Te deseamos buen provecho.';
+  const { id } = req.params;
+  const user = models.User.findOne({ where: { id } });
+  const message = `Eathouse: Hola ${user.firstname}, tu orden va camino. Te deseamos buen provecho.`;
   const phone = '8123203436';
   sendSms(message, phone);
   return res.json({ message: 'Notificacíon enviada' });
