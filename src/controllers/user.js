@@ -25,6 +25,15 @@ controller.login = (req, res, next) => {
   return next();
 };
 
+controller.loginFacebook = (req, res, next) => {
+  console.log("Test FACEBOOK---->");
+  res.status(200).json({
+    ok: true,
+    user: req.user.toAuthJSON(),
+  });
+  return next();
+};
+
 controller.create = async (req, res) => {
   try {
     const user = await models.User.create(req.body);
