@@ -3,6 +3,16 @@ import sendSms from '../../utils/send-sms';
 
 const controller = {};
 
+controller.get = async (req, res) => {
+  const user = await models.User.findOne({ 
+    where: { id: req.params.id },
+    include: [
+      { model: models.UserAddress, as: 'user_address' },
+    ],
+  });
+  return res.json(user);
+};
+
 controller.getAll = async (req, res) => {
   const users = await models.User.findAll({ order: [['id', 'DESC']] });
   return res.json(users);

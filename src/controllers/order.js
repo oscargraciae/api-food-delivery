@@ -111,6 +111,29 @@ controller.create = async (req, res) => {
   }
 };
 
+controller.createCash = async (req, res) => {
+  try {
+    const data = req.body;
+    const order = await calculateItems(data.orderDetails);
+    const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
+
+    const orderResp = await saveOrder({
+      ...data, ...order, userId: req.user.id, orderStatusId: 1,
+    });
+    saveOrderDishes(order.dishes, orderResp);
+    return res.json({
+      ok: true,
+      orderResp,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: 'No se ha podido procesar la orden',
+      error: error.message,
+    });
+  }
+};
+
 controller.estimateOrder = async (req, res) => {
   // Calcula el costo de la orden en base a los productos
   const data = req.body;
