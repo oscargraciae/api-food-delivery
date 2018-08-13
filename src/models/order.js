@@ -12,6 +12,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       defaultValue: 0,
     },
+    discount: {
+      type: DataTypes.DECIMAL,
+      defaultValue: 0,
+    },
   }, { underscored: true });
 
   Order.associate = (models) => {

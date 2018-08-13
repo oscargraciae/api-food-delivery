@@ -11,6 +11,7 @@ controller.get = async (req, res) => {
     where: { id },
     include: [
       { model: models.UserAddress, as: 'user_address' },
+      { model: models.Bussine },
     ],
   });
 
@@ -92,6 +93,39 @@ controller.createAddress = async (req, res) => {
         where: { id: req.user.id },
       });
       user.update({ withAddress: true });
+    }
+    return res.json({
+      ok: true,
+      address,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error,
+    });
+  }
+};
+
+
+controller.createAddressWithBusiness = async (req, res) => {
+  try {
+    const data = req.body;
+    const business = await models.Bussine.findOne({ where: { id: data.businessId } });
+    const address = await models.UserAddress.create({
+      addressMap: business.addressMap,
+      street: business.street,
+      area: business.area,
+      lat: business.lat,
+      lng: business.lng,
+      city: business.city,
+      state: business.state,
+      phone: data.phone,
+      notes: data.notes,
+      userId: req.user.id,
+    });
+    if (address) {
+      const user = await models.User.findOne({ where: { id: req.user.id } });
+      user.update({ withAddress: true, bussinesId: business.id });
     }
     return res.json({
       ok: true,

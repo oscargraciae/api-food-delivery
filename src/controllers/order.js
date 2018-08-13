@@ -8,10 +8,11 @@ import { CONEKTA_KEY } from '../config/consts';
 const controller = {};
 const { Op } = sequelize;
 
-async function calculateItems(data) {
+async function calculateItems(data, pDiscount) {
   const dishes = [];
   let total = 0;
   let subtotal = 0;
+  let discount = 0;
   const fee = 0;
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
@@ -26,17 +27,28 @@ async function calculateItems(data) {
     dishes.push(orderDetail);
     subtotal += totalItem;
   }
-  total = subtotal + fee;
+  discount = subtotal * (pDiscount / 100);
+  total = (subtotal + fee) - discount;
   return {
     total,
     subtotal,
     fee,
+    discount,
     dishes,
   };
 }
 
 function payment(data, callback) {
-  // conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+  // Se agrega el descuento
+  let objDiscount = null;
+  if (data.discount > 0) {
+    objDiscount = {
+      code: 'Convenio con empresa',
+      type: 'loyalty',
+      amount: data.discount,
+    };
+  }
+
   conekta.api_key = CONEKTA_KEY;
   conekta.locale = 'es';
   conekta.Order.create({
@@ -45,6 +57,8 @@ function payment(data, callback) {
       customer_id: data.customerId,
     },
     line_items: data.items,
+    discount_lines: [objDiscount],
+    // discount_lines: [],
     charges: [{
       payment_method: {
         type: 'card',
@@ -53,22 +67,16 @@ function payment(data, callback) {
     }],
   }, (err, order) => {
     if (err) {
-      return callback({
-        ok: false,
-        err,
-      });
+      return callback({ ok: false, err });
     }
-    return callback({
-      ok: true,
-      order,
-    });
+
+    return callback({ ok: true, order });
   });
 }
 
 async function saveOrderDishes(dishes, order) {
   for (let x = 0; x < dishes.length; x++) {
     const item = dishes[x];
-    console.log("Guardado de platillo------->", item);
     await models.OrderDetail.create({ ...item, orderId: order.id });
   }
 }
@@ -81,56 +89,36 @@ async function saveOrder(order) {
 controller.create = async (req, res) => {
   try {
     const data = req.body;
-    const order = await calculateItems(data.orderDetails);
+
+    // consultar usuario comprador
+    const user = await models.User.findOne({ where: { id: req.user.id } });
+    let discount = 0;
+    if (user.bussinesId) { discount = 20; }
+
+    // Se calcula el subtotal, total de la compra por listado de productos
+    const order = await calculateItems(data.orderDetails, discount);
+
+    // Se genera un arreglo con los objetos para registrar en conekta
     const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
 
+    // Se consulta la tarjeta con la que se hara el pago
     const creditCard = await models.CreditCard.findById(data.creditCardId);
 
-    payment({ customerId: req.user.conektaid, items: newDishes, paymentSourceId: creditCard.token }, async (orderConekta) => {
+    // Se registra el pago en conketa
+    payment({ customerId: req.user.conektaid, items: newDishes, paymentSourceId: creditCard.token, discount: Number(order.discount * 100) }, async (orderConekta) => {
       if (orderConekta.ok) {
-        const orderResp = await saveOrder({
-          ...data, ...order, userId: req.user.id, orderStatusId: 1,
-        });
+        // Se guarda la orden
+        const orderResp = await saveOrder({ ...data, ...order, userId: req.user.id, orderStatusId: 1 });
+        
+        // Se guarda el detalle de la orden (Listado de productos)
         saveOrderDishes(order.dishes, orderResp);
-        return res.json({
-          ok: true,
-          orderResp,
-        });
+
+        return res.json({ ok: true, orderResp });
       }
-      return res.json({
-        ok: false,
-        err: orderConekta.err,
-      });
+      return res.json({ ok: false, err: orderConekta.err });
     });
   } catch (error) {
-    return res.status(500).json({
-      ok: false,
-      message: 'No se ha podido procesar la orden',
-      error: error.message,
-    });
-  }
-};
-
-controller.createCash = async (req, res) => {
-  try {
-    const data = req.body;
-    const order = await calculateItems(data.orderDetails);
-    const newDishes = data.orderDetails.map(item => ({ name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity }));
-
-    const orderResp = await saveOrder({
-      ...data, ...order, userId: req.user.id, orderStatusId: 1,
-    });
-    saveOrderDishes(order.dishes, orderResp);
-    return res.json({
-      ok: true,
-      orderResp,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      ok: false,
-      message: 'No se ha podido procesar la orden',
-      error: error.message,
-    });
+    return res.status(500).json({ ok: false, message: 'No se ha podido procesar la orden', error: error.message });
   }
 };
 
@@ -176,7 +164,6 @@ controller.getSchedules = async (req, res) => {
   const schedules = await models.OrderDetail.findAll({
     where: {
       deliveryDate: {
-        // [Op.lt]: new Date(),
         [Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000),
       },
     },
@@ -184,8 +171,6 @@ controller.getSchedules = async (req, res) => {
       model: models.Order,
       where: { userId: req.user.id },
     }, { model: models.Dish, as: 'dish' }],
-    // group: ['deliveryDate'],
-    // group: ['orderId'],
   });
   return res.json(schedules);
 };

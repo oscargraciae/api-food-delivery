@@ -10,6 +10,7 @@ routes.post('/login-facebook', authFacebook, userController.loginFacebook);
 routes.post('/login', authLocal, userController.login);
 routes.post('/signup', userController.create);
 routes.post('/address', authJwt, userController.createAddress);
+routes.post('/link-business', authJwt, userController.createAddressWithBusiness);
 routes.post('/send-password-email', userController.sendPasswordReset);
 
 export default routes;

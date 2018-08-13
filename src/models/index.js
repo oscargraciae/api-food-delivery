@@ -49,6 +49,7 @@ const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
 // });
 
 const models = {
+  Bussine: sequelize.import('./bussines'),
   CreditCard: sequelize.import('./credit-card'),
   DishCalendar: sequelize.import('./dish-calendar'),
   Dish: sequelize.import('./dish'),
