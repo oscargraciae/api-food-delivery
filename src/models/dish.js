@@ -9,6 +9,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'available_on',
     },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      field: 'category_id',
+    },
   });
 
   // Dish.associate = (models) => {};
