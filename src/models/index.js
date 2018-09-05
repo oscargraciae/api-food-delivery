@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 
+// sequelize db:migrate --env test
 // TEST
 // const sequelize = new Sequelize('eathouse_test', 'eathouse', 'Eathouse.001', {
 //   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',

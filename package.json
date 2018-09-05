@@ -52,7 +52,7 @@
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
     "pg": "^7.4.1",
-    "sequelize": "^4.33.4",
+    "sequelize": "^4.38.0",
     "twilio": "^3.17.6"
   }
 }

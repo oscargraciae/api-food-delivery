@@ -6,5 +6,7 @@ const routes = new Router();
 routes.get('/general', controller.getGeneral);
 routes.get('/users-month', controller.getUserByMonth);
 routes.get('/orders-month', controller.getOrdersByMonth);
+routes.get('/order-details-month', controller.getOrderDetailsByMonth);
+routes.get('/order-total-month', controller.getOrderTotalByMonth);
 
 export default routes;
