@@ -91,9 +91,11 @@ controller.create = async (req, res) => {
     const data = req.body;
 
     // consultar usuario comprador
-    const user = await models.User.findOne({ where: { id: req.user.id } });
+    // const user = await models.User.findOne({ where: { id: req.user.id } });
     let discount = 0;
-    if (user.bussinesId) { discount = 20; }
+
+    // if (user.bussinesId) { discount = 20; }
+    if (data.isDiscount) { discount = 20; }
 
     // Se calcula el subtotal, total de la compra por listado de productos
     const order = await calculateItems(data.orderDetails, discount);
@@ -109,7 +111,7 @@ controller.create = async (req, res) => {
       if (orderConekta.ok) {
         // Se guarda la orden
         const orderResp = await saveOrder({ ...data, ...order, userId: req.user.id, orderStatusId: 1 });
-        
+
         // Se guarda el detalle de la orden (Listado de productos)
         saveOrderDishes(order.dishes, orderResp);
 
