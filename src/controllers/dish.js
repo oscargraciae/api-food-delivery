@@ -4,7 +4,7 @@ import { test, addContactToList } from '../utils/sendgrid-client';
 const controller = {};
 
 controller.getAll = async (req, res) => {
-  const dishes = await models.Dish.findAll({ where: { active: true }, order: [['id', 'desc']] });
+  const dishes = await models.Dish.findAll({ where: { active: true }, order: [['id', 'ASC']] });
   return res.json(dishes);
 };
 
