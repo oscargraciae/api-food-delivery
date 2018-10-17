@@ -10,6 +10,7 @@ import orderAdminRoutes from '../admin/routes/admin-order';
 import userAdminRoutes from '../admin/routes/admin-users';
 import dataAdminRoutes from '../admin/routes/admin-data';
 import bussinesAdminRoutes from '../admin/routes/admin-bussines';
+import dishesAdminRoutes from '../admin/routes/admin-dishes';
 
 import { authJwt } from '../auth.service';
 
@@ -26,4 +27,5 @@ export default (app) => {
   app.use('/api/admin/users', userAdminRoutes);
   app.use('/api/admin/data', dataAdminRoutes);
   app.use('/api/admin/bussines', bussinesAdminRoutes);
+  app.use('/api/admin/dishes', dishesAdminRoutes);
 };

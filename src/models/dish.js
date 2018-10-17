@@ -5,6 +5,7 @@ export default (sequelize, DataTypes) => {
     ingredients: DataTypes.STRING,
     image: DataTypes.STRING,
     price: DataTypes.DECIMAL,
+    active: DataTypes.BOOLEAN,
     availableOn: {
       type: DataTypes.STRING,
       field: 'available_on',
