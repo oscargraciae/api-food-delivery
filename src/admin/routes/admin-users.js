@@ -7,5 +7,5 @@ routes.get('/', userController.getAll);
 routes.get('/:id', userController.get);
 routes.get('/delivery/date', userController.getAllByDeliveryDate);
 routes.get('/:id/delivery-notification', userController.sendDeliveryNotification);
-
+routes.get('/user/view', userController.getOrderByUser);
 export default routes;

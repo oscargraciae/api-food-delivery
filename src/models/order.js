@@ -44,6 +44,7 @@ export default (sequelize, DataTypes) => {
         field: 'order_status_id',
       },
     });
+    Order.hasMany(models.OrderDetail);
   };
 
   return Order;

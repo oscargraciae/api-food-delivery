@@ -54,6 +54,11 @@ export default (sequelize, DataTypes) => {
       defaultValue: false,
       field: 'with_address',
     },
+    marketing: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: 'marketing',
+    },
     conektaid: {
       type: DataTypes.STRING,
       field: 'conektaid',
@@ -80,6 +85,7 @@ export default (sequelize, DataTypes) => {
         field: 'bussines_id',
       },
     });
+    User.hasMany(models.Order);
     // User.hasMany(models.UserAddress, {foreignKey: 'AuthorId'})
   };
 

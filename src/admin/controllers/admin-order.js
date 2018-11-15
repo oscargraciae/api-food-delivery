@@ -39,23 +39,33 @@ controller.getOrderDetail = async (req, res) => {
 
 controller.getAll = async (req, res) => {
   const { date } = req.params;
-  // const dateNow = moment(new Date(date), 'YYYY-MM-DD').format('YYYY-MM-DD');
-  // console.log("Fecha server-->", dateNow);
-  // const dateNow = moment(new Date(Date.now()), 'YYYY-MM-DD').format('YYYY-MM-DD');
   const yesterday = moment(date).add(1, 'days');
   const orders = await models.OrderDetail.findAll({
     where: {
       deliveryDate: {
-        // lt: new Date(),
-        // lt: date,
         lt: Date.parse(yesterday),
         gte: Date.parse(date),
-        // gte: Date.parse('2018-06-27'),
       },
     },
     include: [{ model: models.Order, include: [models.User] }, { model: models.Dish, as: 'dish' }],
   });
   return res.json(orders);
+};
+
+controller.getAllGroup = async (req, res) => {
+  const { date } = req.params;
+  const d = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+  const de = new Date(new Date().setDate(new Date(date).getDate() + 1)).toISOString().slice(0, 19).replace('T', ' ');
+
+  const [data] = await models.sequelize.query(`
+    SELECT order_details.dish_id, dishes.name, SUM(order_details.quantity)
+    FROM order_details
+    INNER JOIN dishes ON dishes.id = dish_id
+    WHERE order_details.delivery_date > '${d}' AND order_details.delivery_date <= '${de}'
+    GROUP BY dish_id, dishes.name
+    ORDER BY sum desc
+  `);
+  return res.json(data);
 };
 
 export default controller;
