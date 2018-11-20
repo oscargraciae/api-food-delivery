@@ -46,6 +46,7 @@
     "merge-graphql-schemas": "^1.4.0",
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
+    "openpay": "^1.0.2",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",

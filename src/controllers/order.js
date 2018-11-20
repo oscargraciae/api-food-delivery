@@ -1,6 +1,6 @@
-import conekta from 'conekta';
+// import conekta from 'conekta';
 import sequelize from 'sequelize';
-
+import Openpay from 'openpay';
 
 import models from '../models';
 import { CONEKTA_KEY } from '../config/consts';
@@ -38,6 +38,44 @@ async function calculateItems(data, pDiscount) {
   };
 }
 
+// METODO DE PAGO CONEKTA
+// function payment(data, callback) {
+//   // Se agrega el descuento
+//   let objDiscount = null;
+//   if (data.discount > 0) {
+//     objDiscount = {
+//       code: 'Convenio con empresa',
+//       type: 'loyalty',
+//       amount: data.discount,
+//     };
+//   }
+
+//   // Configurarion y envio de conekta
+//   conekta.api_key = CONEKTA_KEY;
+//   conekta.locale = 'es';
+//   conekta.Order.create({
+//     currency: 'MXN',
+//     customer_info: {
+//       customer_id: data.customerId,
+//     },
+//     line_items: data.items,
+//     discount_lines: [objDiscount],
+//     // discount_lines: [],
+//     charges: [{
+//       payment_method: {
+//         type: 'card',
+//         payment_source_id: data.paymentSourceId,
+//       },
+//     }],
+//   }, (err, order) => {
+//     if (err) {
+//       return callback({ ok: false, err });
+//     }
+
+//     return callback({ ok: true, order });
+//   });
+// }
+
 function payment(data, callback) {
   // Se agrega el descuento
   let objDiscount = null;
@@ -49,28 +87,22 @@ function payment(data, callback) {
     };
   }
 
-  conekta.api_key = CONEKTA_KEY;
-  conekta.locale = 'es';
-  conekta.Order.create({
-    currency: 'MXN',
-    customer_info: {
-      customer_id: data.customerId,
-    },
-    line_items: data.items,
-    discount_lines: [objDiscount],
-    // discount_lines: [],
-    charges: [{
-      payment_method: {
-        type: 'card',
-        payment_source_id: data.paymentSourceId,
-      },
-    }],
-  }, (err, order) => {
-    if (err) {
-      return callback({ ok: false, err });
-    }
+  console.log("data.paymentSourceId--------->", data.paymentSourceId);
 
-    return callback({ ok: true, order });
+  // Configurarion y envio de conekta
+  const openpay = new Openpay('m7pd5e0tn3gnjzam8jvc', 'sk_baecde9ba76f45d382f7827efdba0b30', false);
+  openpay.customers.charges.create(data.customerId, {
+    source_id: data.paymentSourceId,
+    method: 'card',
+    amount: data.total,
+    currency: 'MXN',
+    description: 'Compra de productos',
+    device_session_id: data.deviceSessionId,
+  }, (error, body) => {
+    if (error) {
+      return callback({ ok: false, error });
+    }
+    return callback({ ok: true, body });
   });
 }
 
@@ -107,17 +139,23 @@ controller.create = async (req, res) => {
     const creditCard = await models.CreditCard.findById(data.creditCardId);
 
     // Se registra el pago en conketa
-    payment({ customerId: req.user.conektaid, items: newDishes, paymentSourceId: creditCard.token, discount: Number(order.discount * 100) }, async (orderConekta) => {
-      if (orderConekta.ok) {
+    payment({
+      customerId: req.user.conektaid, total: order.total, deviceSessionId: data.deviceSessionId, items: newDishes, paymentSourceId: creditCard.token, discount: Number(order.discount * 100),
+    }, async (openPayResponse, erro) => {
+      console.log("openPayResponse------->", openPayResponse);
+      console.log("openPayResponse------->", erro);
+      if (openPayResponse.ok) {
         // Se guarda la orden
-        const orderResp = await saveOrder({ ...data, ...order, userId: req.user.id, orderStatusId: 1 });
+        const orderResp = await saveOrder({
+          ...data, ...order, userId: req.user.id, orderStatusId: 1,
+        });
 
         // Se guarda el detalle de la orden (Listado de productos)
         saveOrderDishes(order.dishes, orderResp);
 
         return res.json({ ok: true, orderResp });
       }
-      return res.json({ ok: false, err: orderConekta.err });
+      return res.json({ ok: false, err: openPayResponse.error });
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: 'No se ha podido procesar la orden', error: error.message });
