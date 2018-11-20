@@ -14,15 +14,9 @@ var _sequelize2 = _interopRequireDefault(_sequelize);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const sequelize = new Sequelize('eathouse_development', 'postgres', 'desarrollo', {
-//   dialect: 'postgres',
-//   // timezone: '',
-//   define: {
-//     underscored: true,
-//   },
-// });
-
-var sequelize = new _sequelize2.default('eathouse', 'eathouse', 'Eathouse.001', {
+// sequelize db:migrate --env test
+// TEST
+var sequelize = new _sequelize2.default('eathouse_test', 'eathouse', 'Eathouse.001', {
   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
   port: 5432,
   dialect: 'postgres',
@@ -31,6 +25,27 @@ var sequelize = new _sequelize2.default('eathouse', 'eathouse', 'Eathouse.001', 
     underscored: true
   }
 });
+
+// PRODUCTION
+// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
+//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
+//   port: 5432,
+//   dialect: 'postgres',
+//   // timezone: '-05:00',
+//   define: {
+//     underscored: true,
+//   },
+// });
+
+// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
+//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
+//   port: 5432,
+//   dialect: 'postgres',
+//   // timezone: '-05:00',
+//   define: {
+//     underscored: true,
+//   },
+// });
 
 // const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
 //   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
@@ -49,6 +64,7 @@ var sequelize = new _sequelize2.default('eathouse', 'eathouse', 'Eathouse.001', 
 // });
 
 var models = {
+  Bussine: sequelize.import('./bussines'),
   CreditCard: sequelize.import('./credit-card'),
   DishCalendar: sequelize.import('./dish-calendar'),
   Dish: sequelize.import('./dish'),

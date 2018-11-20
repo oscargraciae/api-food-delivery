@@ -12,7 +12,7 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _models = require('../models');
+var _models = require('../../models');
 
 var _models2 = _interopRequireDefault(_models);
 
@@ -20,35 +20,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var controller = {};
 
-controller.getAddress = function () {
+controller.getAll = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(req, res) {
-    var addresses;
+    var dishes;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            _context.next = 3;
-            return _models2.default.UserAddress.findAll({ where: { userId: req.user.id }, order: [['id', 'DESC']] });
+            _context.next = 2;
+            return _models2.default.Dish.findAll({ order: [['id', 'DESC']] });
 
-          case 3:
-            addresses = _context.sent;
-            return _context.abrupt('return', res.json(addresses));
+          case 2:
+            dishes = _context.sent;
+            return _context.abrupt('return', res.json(dishes));
 
-          case 7:
-            _context.prev = 7;
-            _context.t0 = _context['catch'](0);
-            return _context.abrupt('return', res.status(500).json({
-              ok: false,
-              error: _context.t0.message
-            }));
-
-          case 10:
+          case 4:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[0, 7]]);
+    }, _callee, undefined);
   }));
 
   return function (_x, _x2) {

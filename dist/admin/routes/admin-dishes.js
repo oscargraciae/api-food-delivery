@@ -6,16 +6,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = require('express');
 
-var _dish = require('../controllers/dish');
+var _adminDishes = require('../controllers/admin-dishes');
 
-var _dish2 = _interopRequireDefault(_dish);
+var _adminDishes2 = _interopRequireDefault(_adminDishes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var routes = new _express.Router();
 
-routes.get('/', _dish2.default.getAll);
-routes.get('/category/:categoryId', _dish2.default.getAllByCategory);
-routes.get('/:id', _dish2.default.get);
+routes.get('/', _adminDishes2.default.getAll);
 
 exports.default = routes;

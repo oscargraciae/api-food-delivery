@@ -12,25 +12,32 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _conekta = require('conekta');
+var _openpay = require('openpay');
 
-var _conekta2 = _interopRequireDefault(_conekta);
+var _openpay2 = _interopRequireDefault(_openpay);
 
 var _models = require('../models');
 
 var _models2 = _interopRequireDefault(_models);
 
+var _consts = require('../config/consts');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function createCreditCard(card, userId) {
-  var cardObj = {
-    token: card.id,
-    last4: card.last4,
-    brand: card.brand,
-    userId: userId
-  };
-  _models2.default.CreditCard.create(cardObj);
-}
+  try {
+    var cardObj = {
+      token: card.id,
+      last4: card.card_number,
+      brand: card.brand,
+      userId: userId
+    };
+    _models2.default.CreditCard.create(cardObj);
+  } catch (error) {
+    console.log("Error----->", error);
+  }
+} // import conekta from 'conekta';
+
 
 var controller = {};
 
@@ -63,35 +70,34 @@ controller.getByUser = function () {
 
 controller.create = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(req, res) {
+    var openpay;
     return _regenerator2.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _conekta2.default.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
-            _conekta2.default.locale = 'es';
+            _context3.prev = 0;
+            openpay = new _openpay2.default('m7pd5e0tn3gnjzam8jvc', 'sk_baecde9ba76f45d382f7827efdba0b30', false);
 
             if (req.user.conektaid) {
-              _conekta2.default.Customer.find(req.user.conektaid, function (err, customer) {
-                customer.createPaymentSource({ type: 'card', token_id: req.body.token }, function (err, card) {
-                  if (err) {
-                    return res.json(err);
+              openpay.customers.get(req.user.conektaid, function (err, customer) {
+                openpay.customers.cards.create(customer.id, { token_id: req.body.token, device_session_id: req.body.deviceSessionId }, function (error, card) {
+                  if (error) {
+                    console.log('error---------->', error);
+                    return res.json(error);
                   }
-                  var resp = card;
-                  createCreditCard(resp, req.user.id);
-                  return res.json(resp);
+                  createCreditCard(card, req.user.id);
+                  return res.json(card);
                 });
               });
             } else {
-              _conekta2.default.Customer.create({
-                name: req.user.firstName + ' ' + req.user.lastName,
-                email: req.user.email,
-                payment_sources: [{
-                  type: 'card',
-                  token_id: req.body.token
-                }]
+              openpay.customers.create({
+                name: '' + req.user.firstName,
+                last_name: req.user.lastName,
+                email: req.user.email
+                // external_id: req.user.id,
               }, function () {
                 var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(err, resp) {
-                  var customer, user;
+                  var user;
                   return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                       switch (_context2.prev = _context2.next) {
@@ -104,18 +110,26 @@ controller.create = function () {
                           return _context2.abrupt('return', res.json(err));
 
                         case 2:
-                          customer = resp.toObject();
+
+                          openpay.customers.cards.create(resp.id, { token_id: req.body.token, device_session_id: req.body.deviceSessionId }, function (error, card) {
+                            if (error) {
+                              console.log('error---------->', error);
+                            } else {
+                              createCreditCard(card, req.user.id);
+                            }
+                          });
+
                           _context2.next = 5;
                           return _models2.default.User.findOne({ where: { id: req.user.id } });
 
                         case 5:
                           user = _context2.sent;
 
-                          user.update({ conektaid: customer.id });
-                          createCreditCard(customer.payment_sources.data[0], req.user.id);
-                          return _context2.abrupt('return', res.json(resp.toObject()));
+                          user.update({ conektaid: resp.id });
 
-                        case 9:
+                          return _context2.abrupt('return', res.json(resp));
+
+                        case 8:
                         case 'end':
                           return _context2.stop();
                       }
@@ -128,13 +142,22 @@ controller.create = function () {
                 };
               }());
             }
+            _context3.next = 9;
+            break;
 
-          case 3:
+          case 5:
+            _context3.prev = 5;
+            _context3.t0 = _context3['catch'](0);
+
+            console.log("Ha ocurrido un error", _context3.t0);
+            return _context3.abrupt('return', res.json({ message: "Ha ocurrido un error" }));
+
+          case 9:
           case 'end':
             return _context3.stop();
         }
       }
-    }, _callee3, undefined);
+    }, _callee3, undefined, [[0, 5]]);
   }));
 
   return function (_x3, _x4) {

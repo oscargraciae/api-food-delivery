@@ -78,6 +78,11 @@ exports.default = function (sequelize, DataTypes) {
       defaultValue: false,
       field: 'with_address'
     },
+    marketing: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: 'marketing'
+    },
     conektaid: {
       type: DataTypes.STRING,
       field: 'conektaid'
@@ -91,16 +96,23 @@ exports.default = function (sequelize, DataTypes) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _context.next = 2;
-                  return _bcrypt2.default.hash(user.password, 12);
+                  if (!user.password) {
+                    _context.next = 6;
+                    break;
+                  }
 
-                case 2:
+                  console.log("Nueva contraseña!!!!", user.password);
+                  // const hashedPassword = await bcrypt.hash(user.password, 12);
+                  _context.next = 4;
+                  return _bcrypt2.default.hashSync(user.password, 12);
+
+                case 4:
                   hashedPassword = _context.sent;
 
                   // eslint-disable-next-line no-param-reassign
                   user.password = hashedPassword;
 
-                case 4:
+                case 6:
                 case 'end':
                   return _context.stop();
               }
@@ -117,6 +129,13 @@ exports.default = function (sequelize, DataTypes) {
 
   User.associate = function (models) {
     User.hasMany(models.UserAddress, { as: 'user_address' }, { foreignKey: { name: 'userId', field: 'user_id' } });
+    User.belongsTo(models.Bussine, {
+      foreignKey: {
+        name: 'bussinesId',
+        field: 'bussines_id'
+      }
+    });
+    User.hasMany(models.Order);
     // User.hasMany(models.UserAddress, {foreignKey: 'AuthorId'})
   };
 

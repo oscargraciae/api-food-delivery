@@ -21,8 +21,8 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var calculateItems = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(data) {
-    var dishes, total, subtotal, fee, i, item, dish, totalItem, orderDetail;
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(data, pDiscount) {
+    var dishes, total, subtotal, discount, fee, i, item, dish, totalItem, orderDetail;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -30,20 +30,21 @@ var calculateItems = function () {
             dishes = [];
             total = 0;
             subtotal = 0;
+            discount = 0;
             fee = 0;
             i = 0;
 
-          case 5:
+          case 6:
             if (!(i < data.length)) {
-              _context.next = 17;
+              _context.next = 18;
               break;
             }
 
             item = data[i];
-            _context.next = 9;
+            _context.next = 10;
             return _models2.default.Dish.findById(item.id);
 
-          case 9:
+          case 10:
             dish = _context.sent;
             totalItem = dish.price * item.quantity;
             orderDetail = {
@@ -56,21 +57,23 @@ var calculateItems = function () {
             dishes.push(orderDetail);
             subtotal += totalItem;
 
-          case 14:
+          case 15:
             i++;
-            _context.next = 5;
+            _context.next = 6;
             break;
 
-          case 17:
-            total = subtotal + fee;
+          case 18:
+            discount = subtotal * (pDiscount / 100);
+            total = subtotal + fee - discount;
             return _context.abrupt('return', {
               total: total,
               subtotal: subtotal,
               fee: fee,
+              discount: discount,
               dishes: dishes
             });
 
-          case 19:
+          case 21:
           case 'end':
             return _context.stop();
         }
@@ -78,10 +81,48 @@ var calculateItems = function () {
     }, _callee, this);
   }));
 
-  return function calculateItems(_x) {
+  return function calculateItems(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
+
+// METODO DE PAGO CONEKTA
+// function payment(data, callback) {
+//   // Se agrega el descuento
+//   let objDiscount = null;
+//   if (data.discount > 0) {
+//     objDiscount = {
+//       code: 'Convenio con empresa',
+//       type: 'loyalty',
+//       amount: data.discount,
+//     };
+//   }
+
+//   // Configurarion y envio de conekta
+//   conekta.api_key = CONEKTA_KEY;
+//   conekta.locale = 'es';
+//   conekta.Order.create({
+//     currency: 'MXN',
+//     customer_info: {
+//       customer_id: data.customerId,
+//     },
+//     line_items: data.items,
+//     discount_lines: [objDiscount],
+//     // discount_lines: [],
+//     charges: [{
+//       payment_method: {
+//         type: 'card',
+//         payment_source_id: data.paymentSourceId,
+//       },
+//     }],
+//   }, (err, order) => {
+//     if (err) {
+//       return callback({ ok: false, err });
+//     }
+
+//     return callback({ ok: true, order });
+//   });
+// }
 
 var saveOrderDishes = function () {
   var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(dishes, order) {
@@ -94,22 +135,20 @@ var saveOrderDishes = function () {
 
           case 1:
             if (!(x < dishes.length)) {
-              _context2.next = 9;
+              _context2.next = 8;
               break;
             }
 
             item = dishes[x];
-
-            console.log("Guardado de platillo------->", item);
-            _context2.next = 6;
+            _context2.next = 5;
             return _models2.default.OrderDetail.create((0, _extends3.default)({}, item, { orderId: order.id }));
 
-          case 6:
+          case 5:
             x++;
             _context2.next = 1;
             break;
 
-          case 9:
+          case 8:
           case 'end':
             return _context2.stop();
         }
@@ -117,7 +156,7 @@ var saveOrderDishes = function () {
     }, _callee2, this);
   }));
 
-  return function saveOrderDishes(_x2, _x3) {
+  return function saveOrderDishes(_x3, _x4) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -144,117 +183,144 @@ var saveOrder = function () {
     }, _callee3, this);
   }));
 
-  return function saveOrder(_x4) {
+  return function saveOrder(_x5) {
     return _ref3.apply(this, arguments);
   };
 }();
-
-var _conekta = require('conekta');
-
-var _conekta2 = _interopRequireDefault(_conekta);
 
 var _sequelize = require('sequelize');
 
 var _sequelize2 = _interopRequireDefault(_sequelize);
 
+var _openpay = require('openpay');
+
+var _openpay2 = _interopRequireDefault(_openpay);
+
 var _models = require('../models');
 
 var _models2 = _interopRequireDefault(_models);
 
+var _consts = require('../config/consts');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import conekta from 'conekta';
 var controller = {};
 var Op = _sequelize2.default.Op;
-
-
 function payment(data, callback) {
-  _conekta2.default.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
-  _conekta2.default.locale = 'es';
-  _conekta2.default.Order.create({
+  // Se agrega el descuento
+  var objDiscount = null;
+  if (data.discount > 0) {
+    objDiscount = {
+      code: 'Convenio con empresa',
+      type: 'loyalty',
+      amount: data.discount
+    };
+  }
+
+  console.log("data.paymentSourceId--------->", data.paymentSourceId);
+
+  // Configurarion y envio de conekta
+  var openpay = new _openpay2.default('m7pd5e0tn3gnjzam8jvc', 'sk_baecde9ba76f45d382f7827efdba0b30', false);
+  openpay.customers.charges.create(data.customerId, {
+    source_id: data.paymentSourceId,
+    method: 'card',
+    amount: data.total,
     currency: 'MXN',
-    customer_info: {
-      customer_id: data.customerId
-    },
-    line_items: data.items,
-    charges: [{
-      payment_method: {
-        type: 'card',
-        payment_source_id: data.paymentSourceId
-      }
-    }]
-  }, function (err, order) {
-    if (err) {
-      return callback({
-        ok: false,
-        err: err
-      });
+    description: 'Compra de productos',
+    device_session_id: data.deviceSessionId
+  }, function (error, body) {
+    if (error) {
+      return callback({ ok: false, error: error });
     }
-    return callback({
-      ok: true,
-      order: order
-    });
+    return callback({ ok: true, body: body });
   });
 }
 
 controller.create = function () {
   var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(req, res) {
-    var data, order, newDishes, creditCard;
+    var data, user, discount, order, newDishes, creditCard;
     return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.prev = 0;
             data = req.body;
+
+            // consultar usuario comprador
+
             _context5.next = 4;
-            return calculateItems(data.orderDetails);
+            return _models2.default.User.findOne({ where: { id: req.user.id } });
 
           case 4:
+            user = _context5.sent;
+            discount = 0;
+
+
+            if (data.isDiscount) {
+              discount = 20;
+            }
+            if (user.bussinesId) {
+              discount = 20;
+            }
+
+            // Se calcula el subtotal, total de la compra por listado de productos
+            _context5.next = 10;
+            return calculateItems(data.orderDetails, discount);
+
+          case 10:
             order = _context5.sent;
 
-            console.log("##########################");
-            console.log(data.orderDetails);
+
+            // Se genera un arreglo con los objetos para registrar en conekta
             newDishes = data.orderDetails.map(function (item) {
               return { name: item.name, unit_price: Number(item.price * 100), quantity: item.quantity };
             });
-            _context5.next = 10;
+
+            // Se consulta la tarjeta con la que se hara el pago
+
+            _context5.next = 14;
             return _models2.default.CreditCard.findById(data.creditCardId);
 
-          case 10:
+          case 14:
             creditCard = _context5.sent;
 
 
-            payment({ customerId: req.user.conektaid, items: newDishes, paymentSourceId: creditCard.token }, function () {
-              var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(orderConekta) {
+            // Se registra el pago en conketa
+            payment({
+              customerId: req.user.conektaid, total: order.total, deviceSessionId: data.deviceSessionId, items: newDishes, paymentSourceId: creditCard.token, discount: Number(order.discount * 100)
+            }, function () {
+              var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(openPayResponse, erro) {
                 var orderResp;
                 return _regenerator2.default.wrap(function _callee4$(_context4) {
                   while (1) {
                     switch (_context4.prev = _context4.next) {
                       case 0:
-                        if (!orderConekta.ok) {
-                          _context4.next = 6;
+                        console.log("openPayResponse------->", openPayResponse);
+                        console.log("openPayResponse------->", erro);
+
+                        if (!openPayResponse.ok) {
+                          _context4.next = 8;
                           break;
                         }
 
-                        _context4.next = 3;
+                        _context4.next = 5;
                         return saveOrder((0, _extends3.default)({}, data, order, { userId: req.user.id, orderStatusId: 1
                         }));
 
-                      case 3:
+                      case 5:
                         orderResp = _context4.sent;
 
+
+                        // Se guarda el detalle de la orden (Listado de productos)
                         saveOrderDishes(order.dishes, orderResp);
-                        return _context4.abrupt('return', res.json({
-                          ok: true,
-                          orderResp: orderResp
-                        }));
 
-                      case 6:
-                        return _context4.abrupt('return', res.json({
-                          ok: false,
-                          err: orderConekta.err
-                        }));
+                        return _context4.abrupt('return', res.json({ ok: true, orderResp: orderResp }));
 
-                      case 7:
+                      case 8:
+                        return _context4.abrupt('return', res.json({ ok: false, err: openPayResponse.error }));
+
+                      case 9:
                       case 'end':
                         return _context4.stop();
                     }
@@ -262,31 +328,27 @@ controller.create = function () {
                 }, _callee4, undefined);
               }));
 
-              return function (_x7) {
+              return function (_x8, _x9) {
                 return _ref5.apply(this, arguments);
               };
             }());
-            _context5.next = 17;
+            _context5.next = 21;
             break;
 
-          case 14:
-            _context5.prev = 14;
+          case 18:
+            _context5.prev = 18;
             _context5.t0 = _context5['catch'](0);
-            return _context5.abrupt('return', res.status(500).json({
-              ok: false,
-              message: 'No se ha podido procesar la orden',
-              error: _context5.t0.message
-            }));
+            return _context5.abrupt('return', res.status(500).json({ ok: false, message: 'No se ha podido procesar la orden', error: _context5.t0.message }));
 
-          case 17:
+          case 21:
           case 'end':
             return _context5.stop();
         }
       }
-    }, _callee5, undefined, [[0, 14]]);
+    }, _callee5, undefined, [[0, 18]]);
   }));
 
-  return function (_x5, _x6) {
+  return function (_x6, _x7) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -338,7 +400,7 @@ controller.estimateOrder = function () {
     }, _callee6, undefined);
   }));
 
-  return function (_x8, _x9) {
+  return function (_x10, _x11) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -369,7 +431,7 @@ controller.getAll = function () {
     }, _callee7, undefined);
   }));
 
-  return function (_x10, _x11) {
+  return function (_x12, _x13) {
     return _ref7.apply(this, arguments);
   };
 }();
@@ -399,7 +461,7 @@ controller.getDetail = function () {
     }, _callee8, undefined);
   }));
 
-  return function (_x12, _x13) {
+  return function (_x14, _x15) {
     return _ref8.apply(this, arguments);
   };
 }();
@@ -420,8 +482,6 @@ controller.getSchedules = function () {
                 model: _models2.default.Order,
                 where: { userId: req.user.id }
               }, { model: _models2.default.Dish, as: 'dish' }]
-              // group: ['deliveryDate'],
-              // group: ['orderId'],
             });
 
           case 2:
@@ -436,7 +496,7 @@ controller.getSchedules = function () {
     }, _callee9, undefined);
   }));
 
-  return function (_x14, _x15) {
+  return function (_x16, _x17) {
     return _ref9.apply(this, arguments);
   };
 }();

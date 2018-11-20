@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.authJwt = exports.authLocal = undefined;
+exports.authJwt = exports.authLocal = exports.authFacebook = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -21,6 +21,10 @@ var _passportLocal = require('passport-local');
 
 var _passportLocal2 = _interopRequireDefault(_passportLocal);
 
+var _passportFacebookToken = require('passport-facebook-token');
+
+var _passportFacebookToken2 = _interopRequireDefault(_passportFacebookToken);
+
 var _passportJwt = require('passport-jwt');
 
 var _bcrypt = require('bcrypt');
@@ -34,68 +38,75 @@ var _models2 = _interopRequireDefault(_models);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Local strategy
+
+// import FacebookStrategy from 'passport-facebook';
 var localOpts = {
   usernameField: 'email'
 };
 
 var localStrategy = new _passportLocal2.default(localOpts, function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(email, password, done) {
-    var user, valid;
+    var user;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-
-            console.log("Datos de login---->", email, password);
-            _context.next = 4;
+            _context.next = 3;
             return _models2.default.User.findOne({ where: { email: email } });
 
-          case 4:
+          case 3:
             user = _context.sent;
 
-            console.log("Info de usuario--->", user);
-            _context.next = 8;
-            return _bcrypt2.default.compare(password, user.password);
-
-          case 8:
-            valid = _context.sent;
+            // const valid = await bcrypt.compare(password, user.password);
+            console.log("new password------>", password, user.password);
 
             if (user) {
-              _context.next = 13;
+              _context.next = 9;
               break;
             }
 
             return _context.abrupt('return', done(null, false));
 
-          case 13:
-            if (valid) {
-              _context.next = 15;
+          case 9:
+            _context.next = 11;
+            return _bcrypt2.default.compare(password, user.password);
+
+          case 11:
+            if (_context.sent) {
+              _context.next = 14;
               break;
             }
 
+            console.log("new password------>", password, user.password);
             return _context.abrupt('return', done(null, false));
 
-          case 15:
+          case 14:
             return _context.abrupt('return', done(null, user));
 
-          case 18:
-            _context.prev = 18;
+          case 17:
+            _context.prev = 17;
             _context.t0 = _context['catch'](0);
             return _context.abrupt('return', done(_context.t0, false));
 
-          case 21:
+          case 20:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[0, 18]]);
+    }, _callee, undefined, [[0, 17]]);
   }));
 
   return function (_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
 }());
+
+var facebookParams = {
+  clientID: '244527906154813',
+  clientSecret: '5c211931e103db0ddf2cff33f909a246'
+  // callbackURL: 'http://localhost:3001/auth/facebook/callback',
+};
 
 // Jwt Strategy
 var jwtOpts = {
@@ -110,34 +121,35 @@ var jwtStrategy = new _passportJwt.Strategy(jwtOpts, function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            console.log("PAYLOAD_---->", payload);
+            _context2.prev = 1;
+            _context2.next = 4;
             return _models2.default.User.findById(payload.id);
 
-          case 3:
+          case 4:
             user = _context2.sent;
 
             if (user) {
-              _context2.next = 6;
+              _context2.next = 7;
               break;
             }
 
             return _context2.abrupt('return', done(null, false));
 
-          case 6:
+          case 7:
             return _context2.abrupt('return', done(null, user));
 
-          case 9:
-            _context2.prev = 9;
-            _context2.t0 = _context2['catch'](0);
+          case 10:
+            _context2.prev = 10;
+            _context2.t0 = _context2['catch'](1);
             return _context2.abrupt('return', done(_context2.t0, false));
 
-          case 12:
+          case 13:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[0, 9]]);
+    }, _callee2, undefined, [[1, 10]]);
   }));
 
   return function (_x4, _x5) {
@@ -147,6 +159,57 @@ var jwtStrategy = new _passportJwt.Strategy(jwtOpts, function () {
 
 _passport2.default.use(localStrategy);
 _passport2.default.use(jwtStrategy);
+_passport2.default.use('facebookToken', new _passportFacebookToken2.default(facebookParams, function () {
+  var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(accessToken, refreshToken, profile, done) {
+    var user;
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return _models2.default.User.findOne({ where: { facebookId: profile.id } });
 
+          case 3:
+            user = _context3.sent;
+
+            if (user) {
+              _context3.next = 8;
+              break;
+            }
+
+            _context3.next = 7;
+            return _models2.default.User.create({
+              facebookId: profile.id,
+              email: profile.emails[0].value,
+              firstName: profile.name.givenName,
+              lastName: profile.name.familyName
+            });
+
+          case 7:
+            user = _context3.sent;
+
+          case 8:
+            return _context3.abrupt('return', done(null, user));
+
+          case 11:
+            _context3.prev = 11;
+            _context3.t0 = _context3['catch'](0);
+            return _context3.abrupt('return', done(_context3.t0, false));
+
+          case 14:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, undefined, [[0, 11]]);
+  }));
+
+  return function (_x6, _x7, _x8, _x9) {
+    return _ref3.apply(this, arguments);
+  };
+}()));
+
+var authFacebook = exports.authFacebook = _passport2.default.authenticate('facebookToken', { session: false });
 var authLocal = exports.authLocal = _passport2.default.authenticate('local', { session: false });
 var authJwt = exports.authJwt = _passport2.default.authenticate('jwt', { session: false });
