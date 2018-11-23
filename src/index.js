@@ -13,6 +13,6 @@ middlewareConfig(app);
 apiRoutes(app);
 
 models.sequelize.sync().then(() => {
-  app.listen(3001);
+  app.listen(8001);
 });
 
