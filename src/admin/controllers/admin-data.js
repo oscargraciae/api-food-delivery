@@ -9,7 +9,7 @@ import models from '../../models';
 
 const controller = {};
 
-const creds = require('../../credentials.json');
+const creds = require('../../config/credentials.json');
 // const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // const TOKEN_PATH = 'token.json';
 
