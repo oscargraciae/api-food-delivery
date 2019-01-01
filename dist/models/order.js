@@ -17,6 +17,10 @@ exports.default = function (sequelize, DataTypes) {
     fee: {
       type: DataTypes.DECIMAL,
       defaultValue: 0
+    },
+    discount: {
+      type: DataTypes.DECIMAL,
+      defaultValue: 0
     }
   }, { underscored: true });
 
@@ -46,6 +50,7 @@ exports.default = function (sequelize, DataTypes) {
         field: 'order_status_id'
       }
     });
+    Order.hasMany(models.OrderDetail);
   };
 
   return Order;

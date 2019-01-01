@@ -11,7 +11,8 @@ exports.default = function (sequelize, DataTypes) {
     brand: DataTypes.STRING,
     isActive: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
+      defaultValue: true,
+      field: 'isActive'
     }
   }, { underscored: true });
 

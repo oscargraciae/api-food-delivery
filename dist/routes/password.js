@@ -6,16 +6,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _express = require('express');
 
-var _dish = require('../controllers/dish');
+var _user = require('../controllers/user');
 
-var _dish2 = _interopRequireDefault(_dish);
+var _user2 = _interopRequireDefault(_user);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var routes = new _express.Router();
 
-routes.get('/', _dish2.default.getAll);
-routes.get('/category/:categoryId', _dish2.default.getAllByCategory);
-routes.get('/:id', _dish2.default.get);
+routes.get('/', _user2.default.validationToken);
+routes.post('/:id', _user2.default.changePassword);
 
 exports.default = routes;

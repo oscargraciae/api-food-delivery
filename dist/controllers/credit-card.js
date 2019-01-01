@@ -20,6 +20,8 @@ var _models = require('../models');
 
 var _models2 = _interopRequireDefault(_models);
 
+var _consts = require('../config/consts');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function createCreditCard(card, userId) {
@@ -42,7 +44,7 @@ controller.getByUser = function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _models2.default.CreditCard.findAll({ where: { userId: req.user.id }, order: [['id', 'DESC']] });
+            return _models2.default.CreditCard.findAll({ where: { userId: req.user.id, isActive: true }, order: [['id', 'DESC']] });
 
           case 2:
             creditCards = _context.sent;
@@ -67,7 +69,8 @@ controller.create = function () {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _conekta2.default.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+            // conekta.api_key = 'key_jaiWQwqGqEkQqqkUqhdy2A';
+            _conekta2.default.api_key = _consts.CONEKTA_KEY;
             _conekta2.default.locale = 'es';
 
             if (req.user.conektaid) {

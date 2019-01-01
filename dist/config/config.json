@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "eathouse",
+    "password": "Eathouse.001",
+    "database": "eathouse",
+    "host": "eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "eathouse",
+    "password": "Eathouse.001",
+    "database": "eathouse_test",
+    "host": "eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
