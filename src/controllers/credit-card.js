@@ -16,7 +16,7 @@ function createCreditCard(card, userId) {
 const controller = {};
 
 controller.getByUser = async (req, res) => {
-  const creditCards = await models.CreditCard.findAll({ where: { userId: req.user.id }, order: [['id', 'DESC']] });
+  const creditCards = await models.CreditCard.findAll({ where: { userId: req.user.id, isActive: true }, order: [['id', 'DESC']] });
   return res.json(creditCards);
 };
 

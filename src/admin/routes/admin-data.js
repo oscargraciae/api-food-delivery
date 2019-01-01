@@ -10,5 +10,6 @@ routes.get('/order-details-month', controller.getOrderDetailsByMonth);
 routes.get('/order-total-month', controller.getOrderTotalByMonth);
 routes.get('/sales-dishes', controller.getProfitByProduct);
 routes.get('/profit-month', controller.getProfitByMonth);
+routes.get('/generate-sheet', controller.setDataSheets);
 
 export default routes;

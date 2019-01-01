@@ -38,6 +38,8 @@
     "express": "^4.16.2",
     "express-validation": "^1.0.2",
     "faker": "^4.1.0",
+    "google-spreadsheet": "^2.0.6",
+    "googleapis": "^27.0.0",
     "graphql": "^0.13.1",
     "graphql-tools": "^2.21.0",
     "helmet": "^3.12.0",

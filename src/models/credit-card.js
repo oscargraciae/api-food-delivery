@@ -6,6 +6,7 @@ export default (sequelize, DataTypes) => {
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      field: 'isActive',
     },
   }, { underscored: true });
 
