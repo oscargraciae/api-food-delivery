@@ -4,7 +4,10 @@ const request = require('request');
 
 import models from '../models';
 
-const token = 'EAAEjeOuRL5oBAJ1MV5EArh56aL0zPRtbnrEHJmj5UeSxeLikprSAgZCVgoWefsUuhSzr1kUAApABp4uNkLU5TA2yRN6MFIrVmbAf3rmWGl32DblwrefSLzelEIPc78YDTxwZC9W6HLQmFzvqGhIXZBscF7OwKvHxZANhdWZBV7AZDZD';
+// const token = 'EAAEjeOuRL5oBAJ1MV5EArh56aL0zPRtbnrEHJmj5UeSxeLikprSAgZCVgoWefsUuhSzr1kUAApABp4uNkLU5TA2yRN6MFIrVmbAf3rmWGl32DblwrefSLzelEIPc78YDTxwZC9W6HLQmFzvqGhIXZBscF7OwKvHxZANhdWZBV7AZDZD';
+const token = 'EAADeZAZAb76T0BAI7cFxJtY9NSbsxp2uzrMKGDQnRPtpgcFiPc15ZAc5qZAX8WxeLmSoWGoPff8HUaZBhGU0D1QCtGavjFv6duRZCvJLLNJ4Y5LQwzO74X81UhFZB65iZC4WLB41k3Jgw4qSE487pq44o4Gwv3cAZBTUIXic1AkBZBfQZDZD';
+
+
 
 const controller = {};
 
