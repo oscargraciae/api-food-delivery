@@ -35,7 +35,7 @@ function handleEvent(senderId, event) {
     if (event.message.quick_reply) {
       handlePostback(senderId, event.message.quick_reply.payload);
     } else {
-      defaultQuestions(senderId);
+      // defaultQuestions(senderId);
     }
   } else if (event.postback) {
     handlePostback(senderId, event.postback.payload);
@@ -100,6 +100,9 @@ async function handlePostback(senderId, payload) {
       break;
     case 'OFFERS_PAYLOAD':
       await offers(senderId);
+      await defaultQuestions(senderId);
+      break;
+    case 'FAQ_PAYLOAD':
       await defaultQuestions(senderId);
       break;
     default:
