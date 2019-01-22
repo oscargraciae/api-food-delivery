@@ -136,14 +136,15 @@ controller.setDataSheets = async (req, res) => {
   const d = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const de = new Date(new Date() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
 
+  // WHERE order_details.delivery_date < '2018-10-27 00:26:50' AND order_details.delivery_date >= '2018-10-26 00:26:50'
+
   const [data] = await models.sequelize.query(
     `
     select DISTINCT users.id, users.*, user_addresses.*, orders.id as order_id, orders.total as total from users
     inner join orders on users.id = orders.user_id
     inner join user_addresses on user_addresses.id = orders.user_address_id
     inner join order_details on order_details.order_id = (select order_id from order_details where orders.id = order_details.order_id limit 1)
-    WHERE order_details.delivery_date < '2018-10-27 00:26:50' AND order_details.delivery_date >= '2018-10-26 00:26:50'
-
+    WHERE order_details.delivery_date < '${d}' AND order_details.delivery_date >= '${de}'
   `,
     { raw: true },
   );
@@ -174,17 +175,21 @@ controller.setDataSheets = async (req, res) => {
     //   });
     // });
 
-    // doc.addWorksheet({
-    //   title: 'my new sheet'
-    // }, function(err, sheet) {
-    //   console.log("sheet----->", sheet);
+    // doc.addWorksheet({ title: `Entregas ${Date.now()}` }, (err, sheet) => {
     //   sheet.setTitle(`Entregas ${Date.now()}`);
-    //   sheet.resize({rowCount: 50, colCount: 20});
-    //   sheet.setHeaderRow(['name'], (e) => {
-    //       doc.addRow(sheet.id, { name: 'Oscar' }, (err) => {
-    //         if (err) console.log("ERROR----->", err);
-    //         console.log("Row------->");
+    //   sheet.resize({ rowCount: 50, colCount: 20 });
+    //   sheet.setHeaderRow(['orderId', 'name', 'address', 'total', 'delivery'], (e) => {
+    //     data.forEach((value, index) => {
+    //       doc.addRow(2, { orderId: value.order_id, name: `${value.first_name} ${value.last_name}`, address: value.street, total: value.total }, (err) => {
+    //         if (err) {
+    //           console.log('Too many requests', err);
+    //         } else {
+    //           setTimeout(() => {
+    //             console.log('Success');
+    //           }, 100);
+    //         }
     //       });
+    //     });
     //   });
     //   // sheet.del(); //async
     // });

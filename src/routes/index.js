@@ -4,6 +4,7 @@ import dishRoutes from './dish';
 import creditCardsRoutes from './credit-cards';
 import orderRoutes from './order';
 import passwordRoutes from './password';
+import webhooksRoutes from './webhooks';
 
 // admin
 import orderAdminRoutes from '../admin/routes/admin-order';
@@ -22,6 +23,7 @@ export default (app) => {
   app.use('/api/v1/credit-cards', creditCardsRoutes);
   app.use('/api/v1/orders', orderRoutes);
   app.use('/api/v1/bussines', bussinesAdminRoutes);
+  app.use('/api/v1/webhooks', webhooksRoutes);
 
   app.use('/api/admin/orders', orderAdminRoutes);
   app.use('/api/admin/users', userAdminRoutes);
