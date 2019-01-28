@@ -16,7 +16,12 @@ controller.get = async (req, res) => {
 };
 
 controller.getAll = async (req, res) => {
-  const users = await models.User.findAll({ order: [['id', 'DESC']] });
+  const users = await models.User.findAll({
+    order: [['id', 'DESC']],
+    include: [
+      { model: models.UserAddress, as: 'user_address' },
+    ],
+  });
   return res.json(users);
 };
 
