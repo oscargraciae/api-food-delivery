@@ -67,15 +67,25 @@ controller.getOrderDetailsByMonth = async (req, res) => {
 };
 
 controller.getOrderTotalByMonth = async (req, res) => {
+
   const [data] = await models.sequelize.query(
     `
     SELECT to_char(created_at, 'YYYY-MM') as month, sum(total) as total_count
-    FROM order_details
+    FROM orders
     GROUP BY to_char(created_at, 'YYYY-MM')
     ORDER BY to_char(created_at, 'YYYY-MM') asc
   `,
     { raw: true },
   );
+  // const [data] = await models.sequelize.query(
+  //   `
+  //   SELECT to_char(created_at, 'YYYY-MM') as month, sum(total) as total_count
+  //   FROM order_details
+  //   GROUP BY to_char(created_at, 'YYYY-MM')
+  //   ORDER BY to_char(created_at, 'YYYY-MM') asc
+  // `,
+  //   { raw: true },
+  // );
 
   return res.json(data);
 };
