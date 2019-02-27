@@ -14,7 +14,6 @@ export const createTokens = async (user) => {
     'secretpass',
   );
 
-  console.log("Token", createToken);
   return createToken;
 };
 
@@ -62,7 +61,7 @@ export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2
     return {};
   }
 
-  const refreshSecret = user.password + SECRET2; 
+  const refreshSecret = user.password + SECRET2;
 
   try {
     jwt.verify(refreshToken, refreshSecret);
@@ -98,7 +97,7 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
   const refreshTokenSecret = user.password + SECRET2;
 
   const [token, refreshToken] = await createTokens(user, SECRET, refreshTokenSecret);
-  
+
   return {
     ok: true,
     token,

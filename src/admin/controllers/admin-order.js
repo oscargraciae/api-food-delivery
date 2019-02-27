@@ -54,14 +54,11 @@ controller.getAll = async (req, res) => {
 
 controller.getAllGroup = async (req, res) => {
   const { date } = req.params;
-  console.log("DATE--->", date);
   // const d = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
   // const de = new Date(new Date().setDate(new Date(date).getDate() + 1)).toISOString().slice(0, 19).replace('T', ' ');
 
   const d = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const de = new Date(new Date() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
-
-  console.log("NEXT DATE----->", de);
 
   const [data] = await models.sequelize.query(`
     SELECT order_details.dish_id, dishes.name, SUM(order_details.quantity)

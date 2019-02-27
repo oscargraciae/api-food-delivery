@@ -54,6 +54,11 @@ export default (sequelize, DataTypes) => {
       defaultValue: false,
       field: 'with_address',
     },
+    remainderAlert: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: 'remainder_alert',
+    },
     marketing: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
