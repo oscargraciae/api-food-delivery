@@ -13,4 +13,6 @@ routes.post('/address', authJwt, userController.createAddress);
 routes.post('/link-business', authJwt, userController.createAddressWithBusiness);
 routes.post('/send-password-email', userController.sendPasswordReset);
 
+routes.post('/control-alerts', authJwt, userController.changeAlerts);
+
 export default routes;

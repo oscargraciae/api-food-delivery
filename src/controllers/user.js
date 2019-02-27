@@ -139,4 +139,20 @@ controller.createAddressWithBusiness = async (req, res) => {
   }
 };
 
+controller.changeAlerts = async (req, res) => {
+  try {
+    const { remainderAlert, marketing } = req.body;
+    const user = await models.User.update({ remainderAlert, marketing }, { where: { id: req.user.id } });
+    return res.json({
+      ok: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error,
+    });
+  }
+};
+
 export default controller;
