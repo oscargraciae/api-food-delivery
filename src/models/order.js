@@ -16,6 +16,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       defaultValue: 0,
     },
+    deviceType: {
+      type: DataTypes.STRING,
+      field: 'device_type',
+    },
   }, { underscored: true });
 
   Order.associate = (models) => {
