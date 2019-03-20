@@ -20,6 +20,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'device_type',
     },
+    paymentMethod: {
+      type: DataTypes.INTEGER,
+      field: 'payment_method',
+    },
+    paymentChange: {
+      type: DataTypes.INTEGER,
+      field: 'payment_change',
+    },
   }, { underscored: true });
 
   Order.associate = (models) => {

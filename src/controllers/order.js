@@ -124,6 +124,32 @@ controller.create = async (req, res) => {
   }
 };
 
+controller.orderCashCreate = async (req, res) => {
+  try {
+    const data = req.body;
+
+    // consultar usuario comprador
+    const user = await models.User.findOne({ where: { id: req.user.id } });
+    let discount = 0;
+
+    if (data.isDiscount) { discount = 20; }
+    if (user.bussinesId) { discount = 20; }
+
+    // Se calcula el subtotal, total de la compra por listado de productos
+    const order = await calculateItems(data.orderDetails, discount);
+
+    // Se guarda la orden
+    const orderResp = await saveOrder({ ...data, ...order, userId: req.user.id, orderStatusId: 1 });
+
+    // Se guarda el detalle de la orden (Listado de productos)
+    saveOrderDishes(order.dishes, orderResp);
+
+    return res.json({ ok: true, orderResp, message: 'Pagado en efectivo' });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: 'No se ha podido procesar la orden', error: error.message });
+  }
+};
+
 controller.estimateOrder = async (req, res) => {
   // Calcula el costo de la orden en base a los productos
   const data = req.body;
