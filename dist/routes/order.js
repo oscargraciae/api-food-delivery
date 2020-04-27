@@ -21,6 +21,7 @@ routes.get('/order-detail/:id', _auth.authJwt, _order2.default.getDetail);
 routes.get('/schedules', _auth.authJwt, _order2.default.getSchedules);
 
 routes.post('/', _auth.authJwt, _order2.default.create);
+routes.post('/cash', _auth.authJwt, _order2.default.orderCashCreate);
 routes.post('/estimate-order', _auth.authJwt, _order2.default.estimateOrder);
 
 exports.default = routes;

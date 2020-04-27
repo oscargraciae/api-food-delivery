@@ -30,16 +30,6 @@ controller.getAllByDeliveryDate = async (req, res) => {
   const d = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const de = new Date(new Date() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
 
-  // const [data] = await models.sequelize.query(
-  //   `
-  //   select DISTINCT users.id, users.* from users
-  //   inner join orders on users.id = orders.user_id
-  //   inner join order_details on orders.id = order_details.order_id
-  //   WHERE order_details.delivery_date < '${d}' AND order_details.delivery_date >= '${de}'
-  // `,
-  //   { raw: true },
-  // );
-
   const [data] = await models.sequelize.query(
     `
     select DISTINCT users.id, users.*, user_addresses.*, orders.id as order_id from users
@@ -51,8 +41,6 @@ controller.getAllByDeliveryDate = async (req, res) => {
   `,
     { raw: true },
   );
-
-  // WHERE order_details.delivery_date < '2018-07-13 03:09:17' AND order_details.delivery_date >= '2018-07-12 03:09:17'
 
   return res.json(data);
 };

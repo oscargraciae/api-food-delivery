@@ -187,7 +187,7 @@ controller.getOrderTotalByMonth = function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return _models2.default.sequelize.query('\n    SELECT to_char(created_at, \'YYYY-MM\') as month, sum(total) as total_count\n    FROM order_details\n    GROUP BY to_char(created_at, \'YYYY-MM\')\n    ORDER BY to_char(created_at, \'YYYY-MM\') asc\n  ', { raw: true });
+            return _models2.default.sequelize.query('\n    SELECT to_char(created_at, \'YYYY-MM\') as month, sum(total) as total_count\n    FROM orders\n    GROUP BY to_char(created_at, \'YYYY-MM\')\n    ORDER BY to_char(created_at, \'YYYY-MM\') asc\n  ', { raw: true });
 
           case 2:
             _ref12 = _context5.sent;
@@ -295,8 +295,11 @@ controller.setDataSheets = function () {
 
             d = new Date().toISOString().slice(0, 19).replace('T', ' ');
             de = new Date(new Date() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+
+            // WHERE order_details.delivery_date < '2018-10-27 00:26:50' AND order_details.delivery_date >= '2018-10-26 00:26:50'
+
             _context8.next = 5;
-            return _models2.default.sequelize.query('\n    select DISTINCT users.id, users.*, user_addresses.*, orders.id as order_id, orders.total as total from users\n    inner join orders on users.id = orders.user_id\n    inner join user_addresses on user_addresses.id = orders.user_address_id\n    inner join order_details on order_details.order_id = (select order_id from order_details where orders.id = order_details.order_id limit 1)\n    WHERE order_details.delivery_date < \'2018-10-27 00:26:50\' AND order_details.delivery_date >= \'2018-10-26 00:26:50\'\n\n  ', { raw: true });
+            return _models2.default.sequelize.query('\n    select DISTINCT users.id, users.*, user_addresses.*, orders.id as order_id, orders.total as total from users\n    inner join orders on users.id = orders.user_id\n    inner join user_addresses on user_addresses.id = orders.user_address_id\n    inner join order_details on order_details.order_id = (select order_id from order_details where orders.id = order_details.order_id limit 1)\n    WHERE order_details.delivery_date < \'' + d + '\' AND order_details.delivery_date >= \'' + de + '\'\n  ', { raw: true });
 
           case 5:
             _ref21 = _context8.sent;
@@ -329,17 +332,21 @@ controller.setDataSheets = function () {
               //   });
               // });
 
-              // doc.addWorksheet({
-              //   title: 'my new sheet'
-              // }, function(err, sheet) {
-              //   console.log("sheet----->", sheet);
+              // doc.addWorksheet({ title: `Entregas ${Date.now()}` }, (err, sheet) => {
               //   sheet.setTitle(`Entregas ${Date.now()}`);
-              //   sheet.resize({rowCount: 50, colCount: 20});
-              //   sheet.setHeaderRow(['name'], (e) => {
-              //       doc.addRow(sheet.id, { name: 'Oscar' }, (err) => {
-              //         if (err) console.log("ERROR----->", err);
-              //         console.log("Row------->");
+              //   sheet.resize({ rowCount: 50, colCount: 20 });
+              //   sheet.setHeaderRow(['orderId', 'name', 'address', 'total', 'delivery'], (e) => {
+              //     data.forEach((value, index) => {
+              //       doc.addRow(2, { orderId: value.order_id, name: `${value.first_name} ${value.last_name}`, address: value.street, total: value.total }, (err) => {
+              //         if (err) {
+              //           console.log('Too many requests', err);
+              //         } else {
+              //           setTimeout(() => {
+              //             console.log('Success');
+              //           }, 100);
+              //         }
               //       });
+              //     });
               //   });
               //   // sheet.del(); //async
               // });

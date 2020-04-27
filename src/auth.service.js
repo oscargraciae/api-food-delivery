@@ -3,7 +3,7 @@ import LocalStrategy from 'passport-local';
 // import FacebookStrategy from 'passport-facebook';
 import FacebookStrategy from 'passport-facebook-token';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import db from './models';
 

@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
-  const Category = sequelize.define('categories', {
+  const UnidType = sequelize.define('unid_types', {
     name: DataTypes.STRING,
   }, { timestamps: false });
-  return Category;
+  return UnidType;
 };

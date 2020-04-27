@@ -16,9 +16,9 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _bcrypt = require('bcrypt');
+var _bcryptjs = require('bcryptjs');
 
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
 var _models = require('../models');
 
@@ -186,7 +186,7 @@ controller.validationToken = function () {
           case 3:
             user = _context4.sent;
             _context4.next = 6;
-            return _bcrypt2.default.compare(user.email, t);
+            return _bcryptjs2.default.compare(user.email, t);
 
           case 6:
             if (_context4.sent) {
@@ -365,6 +365,47 @@ controller.createAddressWithBusiness = function () {
 
   return function (_x13, _x14) {
     return _ref7.apply(this, arguments);
+  };
+}();
+
+controller.changeAlerts = function () {
+  var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
+    var _req$body, remainderAlert, marketing, user;
+
+    return _regenerator2.default.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.prev = 0;
+            _req$body = req.body, remainderAlert = _req$body.remainderAlert, marketing = _req$body.marketing;
+            _context8.next = 4;
+            return _models2.default.User.update({ remainderAlert: remainderAlert, marketing: marketing }, { where: { id: req.user.id } });
+
+          case 4:
+            user = _context8.sent;
+            return _context8.abrupt('return', res.json({
+              ok: true,
+              user: user
+            }));
+
+          case 8:
+            _context8.prev = 8;
+            _context8.t0 = _context8['catch'](0);
+            return _context8.abrupt('return', res.status(500).json({
+              ok: false,
+              error: _context8.t0
+            }));
+
+          case 11:
+          case 'end':
+            return _context8.stop();
+        }
+      }
+    }, _callee8, undefined, [[0, 8]]);
+  }));
+
+  return function (_x15, _x16) {
+    return _ref8.apply(this, arguments);
   };
 }();
 

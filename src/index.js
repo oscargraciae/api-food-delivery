@@ -12,7 +12,18 @@ const app = express();
 middlewareConfig(app);
 apiRoutes(app);
 
-models.sequelize.sync().then(() => {
-  app.listen(3001);
-});
+const port = process.env.PORT || 3001;
 
+// app.listen(port, () => {
+//   console.log(`Server listen on port: ${port}`);
+// });
+
+// models.sequelize.sync({ alter: true }).then(() => {
+//   app.listen(3001);
+// });
+
+models.sequelize.sync({ alter: true }).then(() => {
+  app.listen(port, () => {
+    console.log(`Server listen on port: ${port}`);
+  });
+});

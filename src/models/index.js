@@ -1,64 +1,28 @@
 import Sequelize from 'sequelize';
 
-// sequelize db:migrate --env test
-// TEST
-// const sequelize = new Sequelize('eathouse_test', 'eathouse', 'Eathouse.001', {
-//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
-//   port: 5432,
-//   dialect: 'postgres',
-//   // timezone: '-05:00',
-//   define: {
-//     underscored: true,
-//   },
-// });
+import constants from '../config/constants';
 
-// PRODUCTION
-const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
-  host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
-  port: 5432,
+const sequelize = new Sequelize(constants.DATABASE, constants.USERNAME, constants.PASSWORD, {
+  host: constants.HOST,
   dialect: 'postgres',
-  // timezone: '-05:00',
   define: {
     underscored: true,
   },
 });
 
-// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
-//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
-//   port: 5432,
-//   dialect: 'postgres',
-//   // timezone: '-05:00',
-//   define: {
-//     underscored: true,
-//   },
-// });
-
-// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
-//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
-//   port: 5432,
-//   dialect: 'postgres',
-//   define: {
-//     underscored: true,
-//     freezeTableName: true,
-//     timestamps: false,
-//   },
-//   dialectOptions: {
-//     useUTC: false,
-//     dateStrings: true,
-//   },
-//   timezone: '+05:00',
-// });
-
 const models = {
-  Bussine: sequelize.import('./bussines'),
+  Store: sequelize.import('./store'),
   CreditCard: sequelize.import('./credit-card'),
-  DishCalendar: sequelize.import('./dish-calendar'),
-  Dish: sequelize.import('./dish'),
+  Product: sequelize.import('./product'),
   OrderDetail: sequelize.import('./order-detail'),
   OrderStatus: sequelize.import('./order-status'),
   Order: sequelize.import('./order'),
   UserAddress: sequelize.import('./user-address'),
   User: sequelize.import('./user'),
+  UnidType: sequelize.import('./unid_type'),
+  Category: sequelize.import('./category'),
+  ProductPrice: sequelize.import('./product_price'),
+  StoreUser: sequelize.import('./store_user'),
 };
 
 Object.keys(models).forEach((modelName) => {

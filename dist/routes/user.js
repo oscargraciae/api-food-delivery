@@ -25,4 +25,6 @@ routes.post('/address', _auth.authJwt, _user2.default.createAddress);
 routes.post('/link-business', _auth.authJwt, _user2.default.createAddressWithBusiness);
 routes.post('/send-password-email', _user2.default.sendPasswordReset);
 
+routes.post('/control-alerts', _auth.authJwt, _user2.default.changeAlerts);
+
 exports.default = routes;

@@ -20,8 +20,5 @@ module.exports = (sequelize, DataTypes) => {
     lat: DataTypes.DECIMAL,
     lng: DataTypes.DECIMAL,
   }, {});
-  bussines.associate = function(models) {
-    // associations can be defined here
-  };
   return bussines;
 };

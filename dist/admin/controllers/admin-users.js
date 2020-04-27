@@ -70,7 +70,10 @@ controller.getAll = function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return _models2.default.User.findAll({ order: [['id', 'DESC']] });
+            return _models2.default.User.findAll({
+              order: [['id', 'DESC']],
+              include: [{ model: _models2.default.UserAddress, as: 'user_address' }]
+            });
 
           case 2:
             users = _context2.sent;

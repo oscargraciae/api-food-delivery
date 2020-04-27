@@ -28,6 +28,10 @@ var _password = require('./password');
 
 var _password2 = _interopRequireDefault(_password);
 
+var _webhooks = require('./webhooks');
+
+var _webhooks2 = _interopRequireDefault(_webhooks);
+
 var _adminOrder = require('../admin/routes/admin-order');
 
 var _adminOrder2 = _interopRequireDefault(_adminOrder);
@@ -61,6 +65,7 @@ exports.default = function (app) {
   app.use('/api/v1/credit-cards', _creditCards2.default);
   app.use('/api/v1/orders', _order2.default);
   app.use('/api/v1/bussines', _adminBussines2.default);
+  app.use('/api/v1/webhooks', _webhooks2.default);
 
   app.use('/api/admin/orders', _adminOrder2.default);
   app.use('/api/admin/users', _adminUsers2.default);

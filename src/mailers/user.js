@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import sgMail from '@sendgrid/mail';
 
 async function mailResetPassword(user) {
@@ -19,7 +19,7 @@ async function mailResetPassword(user) {
   };
 
   sgMail.setSubstitutionWrappers('=', '=');
-  
+
   sgMail.send(msg);
 
   return "Mensaje de prueba" + hashedEmail;

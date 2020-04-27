@@ -26,12 +26,27 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //   },
 // });
 
+var DB_TEST = {
+  DATABASE: 'ecommerce_dev',
+  USERNAME: 'nwsa@evaa',
+  PASSWORD: 'Evaa.001$',
+  HOST: 'evaa.postgres.database.azure.com'
+};
+
 // PRODUCTION
-var sequelize = new _sequelize2.default('eathouse', 'eathouse', 'Eathouse.001', {
-  host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
-  port: 5432,
+// const sequelize = new Sequelize('eathouse', 'eathouse', 'Eathouse.001', {
+//   host: 'eathouse.cyzwdrnlmdwk.us-west-2.rds.amazonaws.com',
+//   port: 5432,
+//   dialect: 'postgres',
+//   // timezone: '-05:00',
+//   define: {
+//     underscored: true,
+//   },
+// });
+
+var sequelize = new _sequelize2.default(DB_TEST.DATABASE, DB_TEST.USERNAME, DB_TEST.PASSWORD, {
+  host: DB_TEST.HOST,
   dialect: 'postgres',
-  // timezone: '-05:00',
   define: {
     underscored: true
   }

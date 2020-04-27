@@ -12,9 +12,9 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _bcrypt = require('bcrypt');
+var _bcryptjs = require('bcryptjs');
 
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
 var _jsonwebtoken = require('jsonwebtoken');
 
@@ -78,6 +78,11 @@ exports.default = function (sequelize, DataTypes) {
       defaultValue: false,
       field: 'with_address'
     },
+    remainderAlert: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: 'remainder_alert'
+    },
     marketing: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -104,7 +109,7 @@ exports.default = function (sequelize, DataTypes) {
                   console.log("Nueva contraseña!!!!", user.password);
                   // const hashedPassword = await bcrypt.hash(user.password, 12);
                   _context.next = 4;
-                  return _bcrypt2.default.hashSync(user.password, 12);
+                  return _bcryptjs2.default.hashSync(user.password, 12);
 
                 case 4:
                   hashedPassword = _context.sent;

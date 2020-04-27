@@ -23,7 +23,7 @@ var mailResetPassword = function () {
             _mail2.default.setApiKey('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');
 
             _context.next = 3;
-            return _bcrypt2.default.hash(user.email, 12);
+            return _bcryptjs2.default.hash(user.email, 12);
 
           case 3:
             hashedEmail = _context.sent;
@@ -60,9 +60,9 @@ var mailResetPassword = function () {
   };
 }();
 
-var _bcrypt = require('bcrypt');
+var _bcryptjs = require('bcryptjs');
 
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
 var _mail = require('@sendgrid/mail');
 

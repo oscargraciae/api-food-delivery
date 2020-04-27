@@ -165,10 +165,13 @@ controller.getAllGroup = function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             date = req.params.date;
-            d = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
-            de = new Date(new Date().setDate(new Date(date).getDate() + 1)).toISOString().slice(0, 19).replace('T', ' ');
+            // const d = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+            // const de = new Date(new Date().setDate(new Date(date).getDate() + 1)).toISOString().slice(0, 19).replace('T', ' ');
+
+            d = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            de = new Date(new Date() - 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
             _context5.next = 5;
-            return _models2.default.sequelize.query('\n    SELECT order_details.dish_id, dishes.name, SUM(order_details.quantity)\n    FROM order_details\n    INNER JOIN dishes ON dishes.id = dish_id\n    WHERE order_details.delivery_date > \'' + d + '\' AND order_details.delivery_date <= \'' + de + '\'\n    GROUP BY dish_id, dishes.name\n    ORDER BY sum desc\n  ');
+            return _models2.default.sequelize.query('\n    SELECT order_details.dish_id, dishes.name, SUM(order_details.quantity)\n    FROM order_details\n    INNER JOIN dishes ON dishes.id = dish_id\n    WHERE order_details.delivery_date < \'' + d + '\' AND order_details.delivery_date >= \'' + de + '\'\n    GROUP BY dish_id, dishes.name\n    ORDER BY sum desc\n  ');
 
           case 5:
             _ref6 = _context5.sent;
@@ -188,5 +191,7 @@ controller.getAllGroup = function () {
     return _ref5.apply(this, arguments);
   };
 }();
+
+// WHERE order_details.delivery_date > '${d}' AND order_details.delivery_date <= '${de}'
 
 exports.default = controller;

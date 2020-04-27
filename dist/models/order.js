@@ -21,6 +21,18 @@ exports.default = function (sequelize, DataTypes) {
     discount: {
       type: DataTypes.DECIMAL,
       defaultValue: 0
+    },
+    deviceType: {
+      type: DataTypes.STRING,
+      field: 'device_type'
+    },
+    paymentMethod: {
+      type: DataTypes.INTEGER,
+      field: 'payment_method'
+    },
+    paymentChange: {
+      type: DataTypes.INTEGER,
+      field: 'payment_change'
     }
   }, { underscored: true });
 

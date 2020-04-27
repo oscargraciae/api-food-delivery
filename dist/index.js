@@ -31,6 +31,18 @@ var app = (0, _express2.default)();
 (0, _middlewares2.default)(app);
 (0, _routes2.default)(app);
 
-_models2.default.sequelize.sync().then(function () {
-  app.listen(3001);
+var port = process.env.PORT || 3001;
+
+app.listen(port, function () {
+  console.log('Server listen on port: ' + port);
 });
+
+// models.sequelize.sync({ alter: true }).then(() => {
+//   app.listen(3001);
+// });
+
+// db.sequelize.sync({ alter: true }).then(() => {
+//   app.listen(port, () => {
+//     console.log(`Server listen on port: ${port}`);
+//   });
+// });

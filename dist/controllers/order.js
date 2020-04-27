@@ -316,12 +316,75 @@ controller.create = function () {
   };
 }();
 
-controller.estimateOrder = function () {
+controller.orderCashCreate = function () {
   var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(req, res) {
-    var data, dishes, i, item, dish, orderDetail;
+    var data, user, discount, order, orderResp;
     return _regenerator2.default.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            data = req.body;
+
+            // consultar usuario comprador
+
+            _context6.next = 4;
+            return _models2.default.User.findOne({ where: { id: req.user.id } });
+
+          case 4:
+            user = _context6.sent;
+            discount = 0;
+
+
+            if (data.isDiscount) {
+              discount = 20;
+            }
+            if (user.bussinesId) {
+              discount = 20;
+            }
+
+            // Se calcula el subtotal, total de la compra por listado de productos
+            _context6.next = 10;
+            return calculateItems(data.orderDetails, discount);
+
+          case 10:
+            order = _context6.sent;
+            _context6.next = 13;
+            return saveOrder((0, _extends3.default)({}, data, order, { userId: req.user.id, orderStatusId: 1 }));
+
+          case 13:
+            orderResp = _context6.sent;
+
+
+            // Se guarda el detalle de la orden (Listado de productos)
+            saveOrderDishes(order.dishes, orderResp);
+
+            return _context6.abrupt('return', res.json({ ok: true, orderResp: orderResp, message: 'Pagado en efectivo' }));
+
+          case 18:
+            _context6.prev = 18;
+            _context6.t0 = _context6['catch'](0);
+            return _context6.abrupt('return', res.status(500).json({ ok: false, message: 'No se ha podido procesar la orden', error: _context6.t0.message }));
+
+          case 21:
+          case 'end':
+            return _context6.stop();
+        }
+      }
+    }, _callee6, undefined, [[0, 18]]);
+  }));
+
+  return function (_x9, _x10) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+
+controller.estimateOrder = function () {
+  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
+    var data, dishes, i, item, dish, orderDetail;
+    return _regenerator2.default.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
           case 0:
             // Calcula el costo de la orden en base a los productos
             data = req.body;
@@ -330,16 +393,16 @@ controller.estimateOrder = function () {
 
           case 3:
             if (!(i < data.length)) {
-              _context6.next = 13;
+              _context7.next = 13;
               break;
             }
 
             item = data[i];
-            _context6.next = 7;
+            _context7.next = 7;
             return _models2.default.Dish.findById(item.id);
 
           case 7:
-            dish = _context6.sent;
+            dish = _context7.sent;
             orderDetail = {
               total: dish.price * item.quantity,
               quantity: item.quantity
@@ -349,44 +412,13 @@ controller.estimateOrder = function () {
 
           case 10:
             i++;
-            _context6.next = 3;
+            _context7.next = 3;
             break;
 
           case 13:
-            return _context6.abrupt('return', res.json(dishes));
+            return _context7.abrupt('return', res.json(dishes));
 
           case 14:
-          case 'end':
-            return _context6.stop();
-        }
-      }
-    }, _callee6, undefined);
-  }));
-
-  return function (_x9, _x10) {
-    return _ref6.apply(this, arguments);
-  };
-}();
-
-controller.getAll = function () {
-  var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(req, res) {
-    var orders;
-    return _regenerator2.default.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.next = 2;
-            return _models2.default.Order.findAll({
-              where: { userId: req.user.id },
-              include: [{ model: _models2.default.UserAddress, as: 'user_address' }],
-              order: [['id', 'DESC']]
-            });
-
-          case 2:
-            orders = _context7.sent;
-            return _context7.abrupt('return', res.json(orders));
-
-          case 4:
           case 'end':
             return _context7.stop();
         }
@@ -399,22 +431,23 @@ controller.getAll = function () {
   };
 }();
 
-controller.getDetail = function () {
+controller.getAll = function () {
   var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(req, res) {
-    var detail;
+    var orders;
     return _regenerator2.default.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
             _context8.next = 2;
-            return _models2.default.OrderDetail.findAll({
-              where: { orderId: req.params.id },
-              include: [{ model: _models2.default.Dish, as: 'dish' }]
+            return _models2.default.Order.findAll({
+              where: { userId: req.user.id },
+              include: [{ model: _models2.default.UserAddress, as: 'user_address' }],
+              order: [['id', 'DESC']]
             });
 
           case 2:
-            detail = _context8.sent;
-            return _context8.abrupt('return', res.json(detail));
+            orders = _context8.sent;
+            return _context8.abrupt('return', res.json(orders));
 
           case 4:
           case 'end':
@@ -429,27 +462,22 @@ controller.getDetail = function () {
   };
 }();
 
-controller.getSchedules = function () {
+controller.getDetail = function () {
   var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(req, res) {
-    var schedules;
+    var detail;
     return _regenerator2.default.wrap(function _callee9$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
             _context9.next = 2;
             return _models2.default.OrderDetail.findAll({
-              where: {
-                deliveryDate: (0, _defineProperty3.default)({}, Op.gte, new Date(new Date() - 24 * 60 * 60 * 1000))
-              },
-              include: [{
-                model: _models2.default.Order,
-                where: { userId: req.user.id }
-              }, { model: _models2.default.Dish, as: 'dish' }]
+              where: { orderId: req.params.id },
+              include: [{ model: _models2.default.Dish, as: 'dish' }]
             });
 
           case 2:
-            schedules = _context9.sent;
-            return _context9.abrupt('return', res.json(schedules));
+            detail = _context9.sent;
+            return _context9.abrupt('return', res.json(detail));
 
           case 4:
           case 'end':
@@ -461,6 +489,41 @@ controller.getSchedules = function () {
 
   return function (_x15, _x16) {
     return _ref9.apply(this, arguments);
+  };
+}();
+
+controller.getSchedules = function () {
+  var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee10(req, res) {
+    var schedules;
+    return _regenerator2.default.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _context10.next = 2;
+            return _models2.default.OrderDetail.findAll({
+              where: {
+                deliveryDate: (0, _defineProperty3.default)({}, Op.gte, new Date(new Date() - 24 * 60 * 60 * 1000))
+              },
+              include: [{
+                model: _models2.default.Order,
+                where: { userId: req.user.id }
+              }, { model: _models2.default.Dish, as: 'dish' }]
+            });
+
+          case 2:
+            schedules = _context10.sent;
+            return _context10.abrupt('return', res.json(schedules));
+
+          case 4:
+          case 'end':
+            return _context10.stop();
+        }
+      }
+    }, _callee10, undefined);
+  }));
+
+  return function (_x17, _x18) {
+    return _ref10.apply(this, arguments);
   };
 }();
 

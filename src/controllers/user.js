@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import models from '../models';
 import { addContactToList } from '../utils/sendgrid-client';
 import { mailResetPassword } from '../mailers/user';

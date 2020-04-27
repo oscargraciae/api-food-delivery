@@ -1,0 +1,8 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/6bd00b2e-a42b-440d-af9e-c0f667930179/resourceGroups/ProyectosNW/providers/Microsoft.Web/sites/api-ecommerce",
+  "appService.deploySubpath": ""
+}

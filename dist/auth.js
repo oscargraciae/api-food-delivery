@@ -25,9 +25,9 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _bcrypt = require('bcrypt');
+var _bcryptjs = require('bcryptjs');
 
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48,12 +48,9 @@ var createTokens = exports.createTokens = function () {
 
           case 2:
             createToken = _context.sent;
-
-
-            console.log("Token", createToken);
             return _context.abrupt('return', createToken);
 
-          case 5:
+          case 4:
           case 'end':
             return _context.stop();
         }
@@ -200,7 +197,7 @@ var tryLogin = exports.tryLogin = function () {
 
           case 5:
             _context3.next = 7;
-            return _bcrypt2.default.compare(password, user.password);
+            return _bcryptjs2.default.compare(password, user.password);
 
           case 7:
             valid = _context3.sent;

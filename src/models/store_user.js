@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 
 export default (sequelize, DataTypes) => {
-  const User = sequelize.define('users', {
+  const StoreUser = sequelize.define('store_users', {
     email: {
       type: DataTypes.STRING,
       unique: {
@@ -34,39 +34,10 @@ export default (sequelize, DataTypes) => {
       },
     },
     password: DataTypes.STRING,
-    phone: DataTypes.STRING,
-    facebookId: {
-      type: DataTypes.STRING,
-      field: 'facebook_id',
-    },
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: 'is_active',
-    },
-    isVerified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: 'is_verified',
-    },
-    withAddress: {
-      field: 'with_address',
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    remainderAlert: {
-      field: 'remainder_alert',
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    marketing: {
-      field: 'marketing',
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    conektaid: {
-      field: 'conektaid',
-      type: DataTypes.STRING,
     },
   }, {
     hooks: {
@@ -79,13 +50,17 @@ export default (sequelize, DataTypes) => {
     },
   });
 
-  User.associate = (models) => {
-    User.hasMany(models.UserAddress, { as: 'user_address' }, { foreignKey: { name: 'userId', field: 'user_id' } });
-    User.hasMany(models.Order);
+  StoreUser.associate = (models) => {
+    StoreUser.belongsTo(models.Store, {
+      foreignKey: {
+        name: 'storeId',
+        field: 'store_id',
+      },
+    });
   };
 
   // eslint-disable-next-line func-names
-  User.prototype.toAuthJSON = function () {
+  StoreUser.prototype.toAuthJSON = function () {
     const createToken = jwt.sign(
       {
         id: this.id,
@@ -107,5 +82,5 @@ export default (sequelize, DataTypes) => {
     };
   };
 
-  return User;
+  return StoreUser;
 };

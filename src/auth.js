@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 
 export const createTokens = async (user) => {

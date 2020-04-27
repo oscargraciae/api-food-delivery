@@ -29,5 +29,7 @@ export default (app) => {
   app.use('/api/admin/users', userAdminRoutes);
   app.use('/api/admin/data', dataAdminRoutes);
   app.use('/api/admin/bussines', bussinesAdminRoutes);
-  app.use('/api/admin/dishes', dishesAdminRoutes);
+
+
+  app.use('/api/v1/manager/dishes', dishesAdminRoutes);
 };

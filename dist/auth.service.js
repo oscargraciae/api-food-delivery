@@ -27,9 +27,9 @@ var _passportFacebookToken2 = _interopRequireDefault(_passportFacebookToken);
 
 var _passportJwt = require('passport-jwt');
 
-var _bcrypt = require('bcrypt');
+var _bcryptjs = require('bcryptjs');
 
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
 var _models = require('./models');
 
@@ -58,43 +58,39 @@ var localStrategy = new _passportLocal2.default(localOpts, function () {
           case 3:
             user = _context.sent;
 
-            // const valid = await bcrypt.compare(password, user.password);
-            console.log("new password------>", password, user.password);
-
             if (user) {
-              _context.next = 9;
+              _context.next = 8;
               break;
             }
 
             return _context.abrupt('return', done(null, false));
 
-          case 9:
-            _context.next = 11;
-            return _bcrypt2.default.compare(password, user.password);
+          case 8:
+            _context.next = 10;
+            return _bcryptjs2.default.compare(password, user.password);
 
-          case 11:
+          case 10:
             if (_context.sent) {
-              _context.next = 14;
+              _context.next = 12;
               break;
             }
 
-            console.log("new password------>", password, user.password);
             return _context.abrupt('return', done(null, false));
 
-          case 14:
+          case 12:
             return _context.abrupt('return', done(null, user));
 
-          case 17:
-            _context.prev = 17;
+          case 15:
+            _context.prev = 15;
             _context.t0 = _context['catch'](0);
             return _context.abrupt('return', done(_context.t0, false));
 
-          case 20:
+          case 18:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, undefined, [[0, 17]]);
+    }, _callee, undefined, [[0, 15]]);
   }));
 
   return function (_x, _x2, _x3) {
@@ -121,35 +117,34 @@ var jwtStrategy = new _passportJwt.Strategy(jwtOpts, function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            console.log("PAYLOAD_---->", payload);
-            _context2.prev = 1;
-            _context2.next = 4;
+            _context2.prev = 0;
+            _context2.next = 3;
             return _models2.default.User.findById(payload.id);
 
-          case 4:
+          case 3:
             user = _context2.sent;
 
             if (user) {
-              _context2.next = 7;
+              _context2.next = 6;
               break;
             }
 
             return _context2.abrupt('return', done(null, false));
 
-          case 7:
+          case 6:
             return _context2.abrupt('return', done(null, user));
 
-          case 10:
-            _context2.prev = 10;
-            _context2.t0 = _context2['catch'](1);
+          case 9:
+            _context2.prev = 9;
+            _context2.t0 = _context2['catch'](0);
             return _context2.abrupt('return', done(_context2.t0, false));
 
-          case 13:
+          case 12:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, undefined, [[1, 10]]);
+    }, _callee2, undefined, [[0, 9]]);
   }));
 
   return function (_x4, _x5) {

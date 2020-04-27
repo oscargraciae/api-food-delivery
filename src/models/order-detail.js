@@ -15,12 +15,12 @@ export default (sequelize, DataTypes) => {
         field: 'order_id',
       },
     });
-    OrderDetail.belongsTo(models.Dish, {
-      foreignKey: {
-        name: 'dishId',
-        field: 'dish_id',
-      },
-    });
+    // OrderDetail.belongsTo(models.Product, {
+    //   foreignKey: {
+    //     name: 'productId',
+    //     field: 'product_id',
+    //   },
+    // });
   };
 
   return OrderDetail;
